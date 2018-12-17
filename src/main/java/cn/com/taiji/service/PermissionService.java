@@ -1,6 +1,6 @@
 package cn.com.taiji.service;
 
-import org.springframework.security.access.ConfigAttribute;
+//import org.springframework.security.access.ConfigAttribute;
 
 import java.util.Collection;
 import java.util.Map;
@@ -16,7 +16,9 @@ import java.util.Map;
 
 public interface PermissionService {
 
-    Map<String, Collection<ConfigAttribute>> getPermissionMap();
+//    Map<String, Collection<ConfigAttribute>> getPermissionMap();
 
-    int saveABRelation(Integer permissionId, Integer roleId);
+    Integer savepermission(Integer permissionId, Integer roleId);
+
+    Integer deletepermission(Integer permissionId, Integer roleId);
 }

@@ -20,5 +20,13 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Override
+    public Role insertrole(Role role) {
+        return roleRepository.save(role);
+    }
 
+    @Override
+    public Integer deleterole(Integer roleId) {
+        return roleRepository.deleteByRoleId(roleId);
+    }
 }

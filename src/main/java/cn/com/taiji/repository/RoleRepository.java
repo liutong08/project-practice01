@@ -1,9 +1,6 @@
 package cn.com.taiji.repository;
 
-import cn.com.taiji.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 
 /**
  * @author : wangsuide
@@ -15,7 +12,7 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface RoleRepository extends JpaRepository<Role,Integer> {
 
-//    int insertPermission();
+int deleteByRoleId(Integer RoleId);
 
 
 

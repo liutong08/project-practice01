@@ -10,4 +10,8 @@ package cn.com.taiji.service;
  */
 
 public interface UserService {
+
+    int saveroles(Integer userId, Integer roleId);
+
+    int deleteroles(Integer id, Integer role);
 }

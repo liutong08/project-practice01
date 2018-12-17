@@ -19,4 +19,13 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Override
+    public int saveroles(Integer userId, Integer roleId) {
+        return userRepository.saveroles(userId,roleId);
+    }
+
+    @Override
+    public int deleteroles(Integer id, Integer role) {
+        return userRepository.deleteroles(id,role);
+    }
 }

@@ -62,4 +62,28 @@ public class Message {
     public void setExtend(Map<String, Object> extend) {
         this.extend = extend;
     }
+
+    //    public int getCode() {
+//        return code;
+//    }
+//
+//    public void setCode(int code) {
+//        this.code = code;
+//    }
+//
+//    public String getMsg() {
+//        return msg;
+//    }
+//
+//    public void setMsg(String msg) {
+//        this.msg = msg;
+//    }
+//
+//    public Map<String, Object> getExtend() {
+//        return extend;
+//    }
+//
+//    public void setExtend(Map<String, Object> extend) {
+//        this.extend = extend;
+//    }
 }

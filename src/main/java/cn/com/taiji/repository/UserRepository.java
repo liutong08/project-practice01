@@ -1,7 +1,10 @@
 package cn.com.taiji.repository;
 
-import cn.com.taiji.domain.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+
+import javax.transaction.Transactional;
 
 /**
  * @author : wangsuide
@@ -19,4 +22,15 @@ public interface UserRepository extends JpaRepository<UserInfo,Integer> {
 
     UserInfo findByUserEmail(String username);
 
+    //给用户增加角色
+    @Modifying
+    @Transactional
+    @Query(value = "INSERT INTO sys_user_role VALUES(?1, ?2)", nativeQuery = true)
+    int saveroles(Integer userId, Integer roleId);
+
+    //给用户删除角色
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM sys_user_role WHERE user_id = ?1 and role_id = ?2", nativeQuery = true)
+    int deleteroles(Integer id, Integer role);
 }

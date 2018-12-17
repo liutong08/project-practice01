@@ -11,4 +11,7 @@ package cn.com.taiji.service;
 
 public interface RoleService {
 
+    Role insertrole(Role role);
+
+    Integer deleterole(Integer roleId);
 }
