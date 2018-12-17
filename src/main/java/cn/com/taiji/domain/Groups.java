@@ -19,7 +19,6 @@ import java.util.Set;
  */
 @Entity
 @Data
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "sys_groups")
@@ -61,7 +60,7 @@ public class Groups {
     private String groupYy;
 
     //创建groups和userInfo的中间表讨论组成员表，关系为ManyToMany
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "sys_groups_users"
             , joinColumns = {@JoinColumn(name = "group_id")}
             , inverseJoinColumns = {@JoinColumn(name = "user_id")})
@@ -76,7 +75,20 @@ public class Groups {
 
     //创建groups和posts的联系，关系为OneToMany
     // @JoinColumn(name = "group_id")
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "groups")
-    private Set<Posts> postsSet;
+    @OneToMany(mappedBy = "groups")
+    private List<Posts> postsList;
 
+    @Override
+    public String toString() {
+        return "Groups{" +
+                "groupId=" + groupId +
+                ", groupName='" + groupName + '\'' +
+                ", groupCreateTime=" + groupCreateTime +
+                ", groupIco='" + groupIco + '\'' +
+                ", groupStatus='" + groupStatus + '\'' +
+                ", groupDescription='" + groupDescription + '\'' +
+                ", groupXx='" + groupXx + '\'' +
+                ", groupYy='" + groupYy + '\'' +
+                '}';
+    }
 }

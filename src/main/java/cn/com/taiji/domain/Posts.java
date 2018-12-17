@@ -7,8 +7,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
  * @ Author     ：liutong.
@@ -19,7 +18,6 @@ import java.util.Set;
  */
 @Entity
 @Data
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "sys_posts")
@@ -58,16 +56,28 @@ public class Posts {
 
     //创建posts和groups的联系，关系为ManyToOne
     @JoinColumn(name = "group_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     private Groups groups;
 
     //创建posts和replies的联系，关系为OneToMany
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "posts")
-    private Set<Replies> repliesSet;
+    @OneToMany(mappedBy = "posts")
+    private List<Replies> repliesList;
 
     //创建posts和user的联系，关系为ManyToOne
     @JoinColumn(name = "user_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private UserInfo userInfo;
 
+    @Override
+    public String toString() {
+        return "Posts{" +
+                "postId=" + postId +
+                ", postTitle='" + postTitle + '\'' +
+                ", postContent='" + postContent + '\'' +
+                ", postCreateTime=" + postCreateTime +
+                ", postPic='" + postPic + '\'' +
+                ", postXx='" + postXx + '\'' +
+                ", postYy='" + postYy + '\'' +
+                '}';
+    }
 }
