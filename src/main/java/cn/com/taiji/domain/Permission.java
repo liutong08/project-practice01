@@ -22,26 +22,31 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name="sys_permission")
 public class Permission {
+    //权限ID，主键
     @Id
     @GeneratedValue
     @Column(name="permission_id",length = 50)
-    //权限ID，主键
     private Integer permissionId;
+
     //权限名
     @Column(name="permission_name",length = 50,nullable = false)
     private String permissionName;
     //权限路劲
     @Column(name="permission_url",length = 255,nullable = false)
     private String permissionUrl;
+
     //权限图标
     @Column(name="permission_icon",length = 255,nullable = false)
     private String  permissionIcon;
+
     //权限描述
     @Column(name="permission_description",length = 255)
     private String permissionDescription;
+
     //权限父节点
     @Column(name="permission_node",length = 255)
     private String permissionNode;
+
     //预留字段
     @Column(name = "permission_xx")
     private String permissionXx;
