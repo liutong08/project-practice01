@@ -20,7 +20,6 @@ import java.util.Set;
 @Entity
 @Table(name = "sys_users")
 @Data
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfo {
@@ -83,27 +82,52 @@ public class UserInfo {
     private String userYy;
 
     //用户和角色多对多关系
-    @ManyToMany(cascade={CascadeType.ALL},fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(name = "sys_users_roles"
             , joinColumns = {@JoinColumn(name = "user_id")}
             , inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private List<Role> rolesList;
 
+    //用户与讨论组是多对多关系
+    @JsonIgnore
+    @ManyToMany(mappedBy = "userInfoList")
+    private List<Groups> groupsList;
+
     //用户表与博客表是一对多的关系
     @JsonIgnore
-    @OneToMany(mappedBy = "userInfo",cascade=CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userInfo")
     private List<Blogs> blogsList;
 
     //用户与评论是一对多关系
     @JsonIgnore
-    @OneToMany(mappedBy = "userInfo",cascade=CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userInfo")
     private List<Comments> commentsList;
     //用户与帖子是一对多关系
     @JsonIgnore
-    @OneToMany(mappedBy = "userInfo",cascade=CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userInfo")
     private List<Posts> postsList;
     //用户与回帖是一对多关系
     @JsonIgnore
-    @OneToMany(mappedBy = "userInfo",cascade=CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "userInfo")
     private List<Replies> repliesList;
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", userLoginName='" + userLoginName + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", userPhone='" + userPhone + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                ", userGender='" + userGender + '\'' +
+                ", userPic='" + userPic + '\'' +
+                ", userStatus='" + userStatus + '\'' +
+                ", userAge=" + userAge +
+                ", userAddress='" + userAddress + '\'' +
+                ", userQq='" + userQq + '\'' +
+                ", userXx='" + userXx + '\'' +
+                ", userYy='" + userYy + '\'' +
+                '}';
+    }
 }

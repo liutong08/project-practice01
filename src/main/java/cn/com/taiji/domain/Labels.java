@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * @ClassName Labels
@@ -19,7 +20,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+
 //标签表
 public class Labels {
 
@@ -42,5 +43,17 @@ public class Labels {
     private String labelXx;
     @Column(name = "label_yy",length =255)
     private String labelYy;
+    @ManyToMany(mappedBy = "labelsList")
+    private List<Groups> groupsList;
 
+    @Override
+    public String toString() {
+        return "Labels{" +
+                "labelId=" + labelId +
+                ", labelName='" + labelName + '\'' +
+                ", labelDescription='" + labelDescription + '\'' +
+                ", labelXx='" + labelXx + '\'' +
+                ", labelYy='" + labelYy + '\'' +
+                '}';
+    }
 }

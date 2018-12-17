@@ -17,7 +17,6 @@ import java.util.List;
  */
 @Entity
 @Data
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="sys_permissions")
@@ -54,9 +53,24 @@ public class Permission {
     private String permissionYy;
 
     //权限表于角色表实现多对多关系
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "sys_permissions_roles"
             , joinColumns = { @JoinColumn(name = "permission_id") }
             , inverseJoinColumns = {@JoinColumn(name = "role_id") })
     private List<Role> rolesList;
+
+
+    @Override
+    public String toString() {
+        return "Permission{" +
+                "permissionId=" + permissionId +
+                ", permissionName='" + permissionName + '\'' +
+                ", permissionUrl='" + permissionUrl + '\'' +
+                ", permissionIcon='" + permissionIcon + '\'' +
+                ", permissionDescription='" + permissionDescription + '\'' +
+                ", permissionNode='" + permissionNode + '\'' +
+                ", permissionXx='" + permissionXx + '\'' +
+                ", permissionYy='" + permissionYy + '\'' +
+                '}';
+    }
 }
