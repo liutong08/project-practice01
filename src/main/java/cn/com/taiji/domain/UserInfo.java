@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @ClassName UserInfo
@@ -93,7 +94,16 @@ public class UserInfo {
     @OneToMany(mappedBy = "userInfo",cascade=CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Blogs> blogsList;
 
+    //用户与评论是一对多关系
     @JsonIgnore
     @OneToMany(mappedBy = "userInfo",cascade=CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Comments> commentsList;
+    //用户与帖子是一对多关系
+    @JsonIgnore
+    @OneToMany(mappedBy = "userInfo",cascade=CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Posts> postsList;
+    //用户与回帖是一对多关系
+    @JsonIgnore
+    @OneToMany(mappedBy = "userInfo",cascade=CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Replies> repliesList;
 }
