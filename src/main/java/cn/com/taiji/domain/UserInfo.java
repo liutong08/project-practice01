@@ -17,7 +17,7 @@ import java.util.List;
  * @Version
  */
 @Entity
-@Table(name = "sys_user")
+@Table(name = "sys_users")
 @Data
 @ToString
 @NoArgsConstructor
@@ -42,15 +42,15 @@ public class UserInfo {
     private String userPassword;
 
     //用户电话
-    @Column(name = "user_phone", length = 20, nullable = false)
+    @Column(name = "user_phone", length = 20)
     private String userPhone;
 
     //用户邮箱
-    @Column(name = "user_email", length = 50, nullable = false)
+    @Column(name = "user_email", length = 50)
     private String userEmail;
 
     //用户性别
-    @Column(name = "user_gender", length = 5, nullable = false)
+    @Column(name = "user_gender", length = 5)
     private String userGender;
 
     //用户头像
@@ -58,15 +58,15 @@ public class UserInfo {
     private String userPic;
 
     //用户状态（实现假删除）
-    @Column(name = "user_status", length = 2, nullable = false)
+    @Column(name = "user_status", length = 2)
     private String userStatus;
 
     //用户年龄
-    @Column(name = "user_age", length = 2, nullable = false)
+    @Column(name = "user_age", length = 2)
     private Integer userAge;
 
     //用户地址
-    @Column(name = "user_address", length = 50, nullable = false)
+    @Column(name = "user_address", length = 50)
     private String userAddress;
 
     //用户QQ
@@ -81,17 +81,19 @@ public class UserInfo {
     @Column(name = "user_yy", length = 255)
     private String userYy;
 
-    @ManyToMany(cascade={CascadeType.ALL},fetch = FetchType.EAGER)
-    @JoinTable(name = "sys_user_role"
+    //用户和角色多对多关系
+    @ManyToMany(cascade={CascadeType.ALL},fetch = FetchType.LAZY)
+    @JoinTable(name = "sys_users_roles"
             , joinColumns = {@JoinColumn(name = "user_id")}
             , inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    private List<Role> roles;
+    private List<Role> rolesList;
 
     //用户表与博客表是一对多的关系
     @JsonIgnore
     @OneToMany(mappedBy = "userInfo",cascade=CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinTable(name = "sys_user_blog"
-            , joinColumns = {@JoinColumn(name = "user_id")}
-            , inverseJoinColumns = {@JoinColumn(name = "blog_id")})
-    private List<Blogs> blogs;
+    private List<Blogs> blogsList;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "userInfo",cascade=CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Comments> commentsList;
 }
