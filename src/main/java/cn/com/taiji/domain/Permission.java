@@ -53,6 +53,7 @@ public class Permission {
     @Column(name = "permission_yy")
     private String permissionYy;
 
+    //权限表于角色表实现多对多关系
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "sys_permission_role"
             , joinColumns = { @JoinColumn(name = "permission_id") }
