@@ -20,7 +20,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Blogs {
     @Id
     @GeneratedValue
@@ -63,7 +62,7 @@ public class Blogs {
     private String blogYy;
 
     //博客和评论表是多对多关系
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(name = "sys_blogs_labels"
             , joinColumns = {@JoinColumn(name = "blog_id")}
             , inverseJoinColumns = {@JoinColumn(name = "label_id")})
@@ -72,12 +71,28 @@ public class Blogs {
 
     //博客和用户是多对一关系
     @JsonIgnore
-    @ManyToOne(cascade=CascadeType.ALL,optional=false)
+    @ManyToOne
     private UserInfo userInfo;
 
 
     //博客和评论是一对多关系
     @JsonIgnore
-    @OneToMany(mappedBy = "blogs",cascade=CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "blogs")
     private List<Comments> commentsList;
+
+    @Override
+    public String toString() {
+        return "Blogs{" +
+                "blogId=" + blogId +
+                ", blogTitle='" + blogTitle + '\'' +
+                ", blogContent='" + blogContent + '\'' +
+                ", blogCreateTime=" + blogCreateTime +
+                ", blogPic='" + blogPic + '\'' +
+                ", blogReadNum=" + blogReadNum +
+                ", blogLikeNum=" + blogLikeNum +
+                ", blogStatus='" + blogStatus + '\'' +
+                ", blogXx='" + blogXx + '\'' +
+                ", blogYy='" + blogYy + '\'' +
+                '}';
+    }
 }

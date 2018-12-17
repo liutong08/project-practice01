@@ -22,7 +22,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+
 //评论表
 public class Comments {
 
@@ -48,13 +48,23 @@ public class Comments {
 
     //评论和博客是多对一关系
     @JsonIgnore
-    @ManyToOne(cascade=CascadeType.ALL,optional=false)
+    @ManyToOne
     private Blogs blogs;
 
     //评论和用户是多对一关系
     @JsonIgnore
-    @ManyToOne(cascade=CascadeType.ALL,optional=false)
+    @ManyToOne
     private UserInfo userInfo;
 
-
+    @Override
+    public String toString() {
+        return "Comments{" +
+                "commentId=" + commentId +
+                ", commentContent='" + commentContent + '\'' +
+                ", commentCreateTime=" + commentCreateTime +
+                ", commentXx='" + commentXx + '\'' +
+                ", commentYy='" + commentYy + '\'' +
+                ", blogs=" + blogs +
+                '}';
+    }
 }

@@ -17,7 +17,6 @@ import java.util.Date;
  */
 @Entity
 @Data
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "sys_replies")
@@ -48,12 +47,22 @@ public class Replies {
 
     //创建replies和posts的联系，关系为ManyToOne
     @JoinColumn(name = "posts_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Posts posts;
 
     //创建replies和user的联系，关系为ManyToOne
     @JoinColumn(name = "user_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private UserInfo userInfo;
 
+    @Override
+    public String toString() {
+        return "Replies{" +
+                "replyId=" + replyId +
+                ", replyContent='" + replyContent + '\'' +
+                ", replyCreateTime=" + replyCreateTime +
+                ", replyXx='" + replyXx + '\'' +
+                ", replyYy='" + replyYy + '\'' +
+                '}';
+    }
 }

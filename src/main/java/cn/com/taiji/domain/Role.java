@@ -20,7 +20,6 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class Role {
     //角色id
     @Id
@@ -47,4 +46,16 @@ public class Role {
     //预留字段
     @Column(name="role_yy")
     private String roleYy;
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "roleId=" + roleId +
+                ", roleName='" + roleName + '\'' +
+                ", roleDescription='" + roleDescription + '\'' +
+                ", roleCreateDate=" + roleCreateDate +
+                ", roleXx='" + roleXx + '\'' +
+                ", roleYy='" + roleYy + '\'' +
+                '}';
+    }
 }
