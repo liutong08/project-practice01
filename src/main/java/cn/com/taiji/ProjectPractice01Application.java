@@ -8,11 +8,11 @@ public class ProjectPractice01Application {
 
     public static void main(String[] args) {
 
-        
+
 
         SpringApplication.run(ProjectPractice01Application.class, args);
-        
-        
+
+
     }
 
 }

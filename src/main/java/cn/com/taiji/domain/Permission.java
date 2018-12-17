@@ -20,7 +20,7 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="sys_permission")
+@Table(name="sys_permissions")
 public class Permission {
     //权限ID，主键
     @Id
@@ -36,7 +36,7 @@ public class Permission {
     private String permissionUrl;
 
     //权限图标
-    @Column(name="permission_icon",length = 255,nullable = false)
+    @Column(name="permission_icon",length = 255)
     private String  permissionIcon;
 
     //权限描述
@@ -53,9 +53,10 @@ public class Permission {
     @Column(name = "permission_yy")
     private String permissionYy;
 
+    //权限表于角色表实现多对多关系
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "sys_permission_role"
+    @JoinTable(name = "sys_permissions_roles"
             , joinColumns = { @JoinColumn(name = "permission_id") }
             , inverseJoinColumns = {@JoinColumn(name = "role_id") })
-    private List<Role> roles;
+    private List<Role> rolesList;
 }

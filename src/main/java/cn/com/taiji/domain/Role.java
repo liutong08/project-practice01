@@ -16,7 +16,7 @@ import java.util.Date;
  * @Version
  */
 @Entity
-@Table(name="sys_role")
+@Table(name="sys_roles")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
