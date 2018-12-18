@@ -64,7 +64,6 @@ public class Comments {
                 ", commentCreateTime=" + commentCreateTime +
                 ", commentXx='" + commentXx + '\'' +
                 ", commentYy='" + commentYy + '\'' +
-                ", blogs=" + blogs +
                 '}';
     }
 }
