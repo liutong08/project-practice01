@@ -72,8 +72,8 @@ public class UserInfo {
     //用户QQ
     @Column(name = "user_qq", length = 20)
     private String userQq;
-    //预留字段
 
+    //预留字段
     @Column(name = "user_xx", length = 255)
     private String userXx;
 
@@ -89,25 +89,23 @@ public class UserInfo {
     private List<Role> rolesList;
 
     //用户与讨论组是多对多关系
-    @JsonIgnore
     @ManyToMany(mappedBy = "userInfoList")
     private List<Groups> groupsList;
 
     //用户表与博客表是一对多的关系
-    @JsonIgnore
     @OneToMany(mappedBy = "userInfo")
     private List<Blogs> blogsList;
 
     //用户与评论是一对多关系
-    @JsonIgnore
+
     @OneToMany(mappedBy = "userInfo")
     private List<Comments> commentsList;
+
     //用户与帖子是一对多关系
-    @JsonIgnore
     @OneToMany(mappedBy = "userInfo")
     private List<Posts> postsList;
+
     //用户与回帖是一对多关系
-    @JsonIgnore
     @OneToMany(mappedBy = "userInfo")
     private List<Replies> repliesList;
 

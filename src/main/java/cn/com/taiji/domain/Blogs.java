@@ -70,13 +70,11 @@ public class Blogs {
 
 
     //博客和用户是多对一关系
-    @JsonIgnore
     @ManyToOne
     private UserInfo userInfo;
 
 
     //博客和评论是一对多关系
-    @JsonIgnore
     @OneToMany(mappedBy = "blogs")
     private List<Comments> commentsList;
 
