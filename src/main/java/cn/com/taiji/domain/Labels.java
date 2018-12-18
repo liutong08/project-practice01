@@ -1,5 +1,6 @@
 package cn.com.taiji.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,6 +44,7 @@ public class Labels {
     private String labelXx;
     @Column(name = "label_yy",length =255)
     private String labelYy;
+    @JsonIgnore
     @ManyToMany(mappedBy = "labelsList")
     private List<Groups> groupsList;
 

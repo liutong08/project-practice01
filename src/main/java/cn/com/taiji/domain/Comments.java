@@ -47,10 +47,12 @@ public class Comments {
     private String commentYy;
 
     //评论和博客是多对一关系
+    @JsonIgnore
     @ManyToOne
     private Blogs blogs;
 
     //评论和用户是多对一关系
+    @JsonIgnore
     @ManyToOne
     private UserInfo userInfo;
 
