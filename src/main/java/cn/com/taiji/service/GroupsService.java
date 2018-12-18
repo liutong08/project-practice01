@@ -1,5 +1,9 @@
 package cn.com.taiji.service;
 
+import cn.com.taiji.domain.Groups;
+
+import java.util.List;
+
 /**
  * @ Author     ：liutong.
  * @ Date       ：Created in 16:36 2018/12/17
@@ -8,4 +12,7 @@ package cn.com.taiji.service;
  * @ Version:     $version
  */
 public interface GroupsService {
+
+    public List<Groups> findAllGroups();
+    public Groups findGroupById(Integer id);
 }
