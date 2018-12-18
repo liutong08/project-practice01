@@ -51,6 +51,11 @@ public class Groups {
     @Column(name = "group_description", length = 255)
     private String groupDescription;
 
+    //讨论组组长
+    @JoinColumn(name = "user_id")
+    @ManyToOne
+    private UserInfo userInfo;
+
     //备用字段XX
     @Column(name = "group_xx", length = 255)
     private String groupXx;
