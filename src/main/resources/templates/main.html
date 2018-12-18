@@ -1,0 +1,251 @@
+<!--/**-->
+<!--* @author : wangsuide-->
+<!--* @version 1.0-->
+<!--* @Project: project-practice01-->
+<!--* @Description: TODO-->
+<!--* @date Date : 2018年12月17日 13:17-->
+<!--*/-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <!--主要样式控制-->
+    <link th:href="@{/img/favicon.html}" rel="shortcut icon" />
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/bootstrap-reset.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/assets/font-awesome/css/font-awesome.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/owl.carousel.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/style-responsive.css}" rel="stylesheet" type="text/css" />
+    <style>
+         body{margin:0; padding:0;}
+        .pageContent{
+            height: 660px;
+            width: 100%;
+            padding: 10px 2px 0px 4px;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+<section id="container" class="">
+    <!--header start-->
+    <header class="header white-bg">
+        <div class="sidebar-toggle-box">
+            <div data-original-title="Toggle Navigation" data-placement="right" class="icon-reorder tooltips"></div>
+        </div>
+        <!--logo start-->
+        <a href="#" class="logo">Flat<span>lab</span></a>
+        <!--logo end-->
+        <div class="nav notify-row" id="top_menu">
+            <!--  notification start -->
+            <ul class="nav top-menu">
+                <!-- settings start -->
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <i class="icon-tasks"></i>
+                        <span class="badge bg-success">6</span>
+                    </a>
+                    <ul class="dropdown-menu extended tasks-bar">
+                        <div class="notify-arrow notify-arrow-green"></div>
+                        <li>
+                            <p class="green">You have 6 pending tasks</p>
+                        </li>
+                        <li class="external">
+                            <a href="#">See All Tasks</a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- settings end -->
+                <!-- inbox dropdown start-->
+                <li id="header_inbox_bar" class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <i class="icon-envelope-alt"></i>
+                        <span class="badge bg-important">5</span>
+                    </a>
+                    <ul class="dropdown-menu extended inbox">
+                        <div class="notify-arrow notify-arrow-red"></div>
+                        <li>
+                            <p class="red">You have 5 new messages</p>
+                        </li>
+                    </ul>
+                </li>
+                <!-- inbox dropdown end -->
+                <!-- notification dropdown start-->
+                <li id="header_notification_bar" class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <i class="icon-bell-alt"></i>
+                        <span class="badge bg-warning">7</span>
+                    </a>
+                    <ul class="dropdown-menu extended notification">
+                        <div class="notify-arrow notify-arrow-yellow"></div>
+                        <li>
+                            <p class="yellow">You have 7 new notifications</p>
+                        </li>
+                    </ul>
+                </li>
+                <!-- notification dropdown end -->
+            </ul>
+            <!--  notification end -->
+        </div>
+        <div class="top-nav ">
+            <!--search & user info start-->
+            <ul class="nav pull-right top-menu">
+                <li>
+                    <input type="text" class="form-control search" placeholder="Search"/>
+                </li>
+                <!-- user login dropdown start-->
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <img alt="" src="img/avatar1_small.jpg"/>
+                        <span class="username">王绥德</span>
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu extended logout">
+                        <div class="log-arrow-up"></div>
+                        <li><a href="#"><i class=" icon-suitcase"></i>个人中心</a></li>
+                        <li><a href="#"><i class="icon-cog"></i>修改密码</a></li>
+                        <li><a href="#"><i class="icon-bell-alt"></i>锁屏</a></li>
+                        <li><a href="login.html"><i class="icon-key"></i>退出登录</a></li>
+                    </ul>
+                </li>
+                <!-- user login dropdown end -->
+            </ul>
+            <!--search & user info end-->
+        </div>
+    </header>
+    <!--header end-->
+    <!--sidebar start-->
+    <aside>
+        <div id="sidebar"  class="nav-collapse ">
+            <!-- sidebar menu start-->
+            <ul class="sidebar-menu">
+                <li class="active">
+                    <a class="" href="index.html">
+                        <i class="icon-dashboard"></i>
+                        <span>首页</span>
+                    </a>
+                </li>
+                <li class="sub-menu">
+                    <a href="javascript:;" class="">
+                        <i class="icon-book"></i>
+                        <span>用户管理</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub">
+                        <li><a class="" href="/role" target="mainFrame">系统管理</a></li>
+                        <li><a class="" href="/role" target="mainFrame">用户管理</a></li>
+                        <li><a class="" href="/role" target="mainFrame">角色管理</a></li>
+                        <li><a class="" href="/role" target="mainFrame">权限管理</a></li>
+                    </ul>
+                </li>
+                <li class="sub-menu">
+                    <a href="javascript:;" class="">
+                        <i class="icon-cogs"></i>
+                        <span>博客管理</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub">
+                        <li><a class="" href="grids.html">博客详情</a></li>
+                        <li><a class="" href="calendar.html">博客评论</a></li>
+                        <li><a class="" href="charts.html">博客审核</a></li>
+                    </ul>
+                </li>
+                <li class="sub-menu">
+                    <a href="javascript:;" class="">
+                        <i class="icon-tasks"></i>
+                        <span>讨论组管理</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub">
+                        <li><a class="" href="form_component.html">讨论组成员</a></li>
+                        <li><a class="" href="form_wizard.html">讨论组详情</a></li>
+                    </ul>
+                </li>
+                <li class="sub-menu">
+                    <a href="javascript:;" class="">
+                        <i class="icon-th"></i>
+                        <span>帖子管理</span>
+                        <span class="arrow"></span>
+                    </a>
+                    <ul class="sub">
+                        <li><a class="" href="basic_table.html">帖子详情</a></li>
+                        <li><a class="" href="dynamic_table.html">帖子审核</a></li>
+                        <li><a class="" href="dynamic_table.html">回帖</a></li>
+                    </ul>
+                </li>
+                <!--<li>-->
+                    <!--<a class="" href="inbox.html">-->
+                        <!--<i class="icon-envelope"></i>-->
+                        <!--<span>Mail </span>-->
+                        <!--<span class="label label-danger pull-right mail-info">2</span>-->
+                    <!--</a>-->
+                <!--</li>-->
+                <!--<li class="sub-menu">-->
+                    <!--<a href="javascript:;" class="">-->
+                        <!--<i class="icon-glass"></i>-->
+                        <!--<span>Extra</span>-->
+                        <!--<span class="arrow"></span>-->
+                    <!--</a>-->
+                    <!--<ul class="sub">-->
+                        <!--<li><a class="" href="blank.html">Blank Page</a></li>-->
+                        <!--<li><a class="" href="profile.html">Profile</a></li>-->
+                        <!--<li><a class="" href="invoice.html">Invoice</a></li>-->
+                        <!--<li><a class="" href="404.html">404 Error</a></li>-->
+                        <!--<li><a class="" href="500.html">500 Error</a></li>-->
+                    <!--</ul>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<a class="" href="login.html">-->
+                        <!--<i class="icon-user"></i>-->
+                        <!--<span>Login Page</span>-->
+                    <!--</a>-->
+                <!--</li>-->
+            </ul>
+            <!-- sidebar menu end-->
+        </div>
+    </aside>
+    <!--sidebar end-->
+    <!--main content start-->
+    <section id="main-content">
+        <section class="wrapper">
+            <!--state overview start-->
+            <div class="pageContent" >
+                <iframe src="http://www.sina.com" id="mainFrame" name="mainFrame"
+                        frameborder="0" width="100%"  height="100%" frameBorder="0">
+                </iframe>
+            </div>
+        </section>
+    </section>
+    <!--main content end-->
+</section>
+<script type="text/javascript" th:src="@{/js/jquery-1.8.3.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.scrollTo.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.nicescroll.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.sparkline.js}"></script>
+<script type="text/javascript" th:src="@{/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.js}"></script>
+<script type="text/javascript" th:src="@{/js/owl.carousel.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.customSelect.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/sparkline-chart.js}"></script>
+<script type="text/javascript" th:src="@{/js/easy-pie-chart.js}"></script>
+<script type="text/javascript" th:src="@{/js/common-scripts.js}"></script>
+<script>
+    //owl carousel
+    $(document).ready(function() {
+        $("#owl-demo").owlCarousel({
+            navigation : true,
+            slideSpeed : 300,
+            paginationSpeed : 400,
+            singleItem : true
+        });
+    });
+    //custom select box
+    $(function(){
+        $('select.styled').customSelect();
+    });
+</script>
+</body>
+</html>
