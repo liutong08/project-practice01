@@ -37,7 +37,7 @@ public class Groups {
     private String groupName;
 
     //讨论组创建时间
-    @Column(name = "group_create_name", nullable = false)
+    @Column(name = "group_create_time", nullable = false)
     private Date groupCreateTime;
 
     //讨论组图标
