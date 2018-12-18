@@ -1,5 +1,6 @@
 package cn.com.taiji.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -53,6 +54,7 @@ public class Permission {
     private String permissionYy;
 
     //权限表于角色表实现多对多关系
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "sys_permissions_roles"
             , joinColumns = { @JoinColumn(name = "permission_id") }

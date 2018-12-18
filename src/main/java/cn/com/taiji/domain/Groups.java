@@ -1,5 +1,6 @@
 package cn.com.taiji.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -52,6 +53,7 @@ public class Groups {
     private String groupDescription;
 
     //讨论组组长
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     @ManyToOne
     private UserInfo userInfo;
@@ -65,6 +67,7 @@ public class Groups {
     private String groupYy;
 
     //创建groups和userInfo的中间表讨论组成员表，关系为ManyToMany
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "sys_groups_users"
             , joinColumns = {@JoinColumn(name = "group_id")}
@@ -72,6 +75,7 @@ public class Groups {
     private List<UserInfo> userInfoList;
 
     //创建groups和labels的中间表讨论组标签表，关系为ManyToMany
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "sys_groups_labels"
             , joinColumns = {@JoinColumn(name = "group_id")}
@@ -79,6 +83,7 @@ public class Groups {
     private List<Labels> labelsList;
 
     //创建groups和posts的联系，关系为OneToMany
+    @JsonIgnore
     // @JoinColumn(name = "group_id")
     @OneToMany(mappedBy = "groups")
     private List<Posts> postsList;
