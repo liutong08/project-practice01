@@ -1,5 +1,6 @@
 package cn.com.taiji.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -55,15 +56,18 @@ public class Posts {
     private String postYy;
 
     //创建posts和groups的联系，关系为ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "group_id")
     @ManyToOne()
     private Groups groups;
 
     //创建posts和replies的联系，关系为OneToMany
+    @JsonIgnore
     @OneToMany(mappedBy = "posts")
     private List<Replies> repliesList;
 
     //创建posts和user的联系，关系为ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     @ManyToOne
     private UserInfo userInfo;
