@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -30,7 +27,7 @@ public class UserController {
 //前台个人中心
 //   个人中心，通过用户Id查询用户
 
-    @RequestMapping(value = "/selectOne/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/selectOne/{id}")
     @ResponseBody
     public Message FindByUserId(@PathVariable("id") Integer userId, HttpServletResponse response) {
         response.setCharacterEncoding("UTF-8");
@@ -88,7 +85,7 @@ public class UserController {
 
         List<UserInfo> userinfos = userService.findByUserStatus("1");
         if (userinfos != null) {
-             return Message.success("查询成功！");
+             return Message.success("查询成功！").add("user",userinfos);
         } else {
             return Message.fail("查询失败！");
         }
