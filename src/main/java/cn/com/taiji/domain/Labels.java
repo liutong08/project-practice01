@@ -44,12 +44,22 @@ public class Labels {
     private String labelXx;
     @Column(name = "label_yy", length = 255)
     private String labelYy;
+
+    //标签和讨论组是多对多关系
     @JsonIgnore
-    @ManyToMany()
+    @ManyToMany
     @JoinTable(name = "sys_groups_labels"
             , joinColumns = {@JoinColumn(name = "label_id")}
             , inverseJoinColumns = {@JoinColumn(name = "group_id")})
     private List<Groups> groupsList;
+
+    //标签表和博客表是多对多关系
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "sys_blogs_labels"
+            , joinColumns = {@JoinColumn(name = "label_id")}
+            , inverseJoinColumns = {@JoinColumn(name = "blog_id")})
+    private List<Labels> labels;
 
     @Override
     public String toString() {
