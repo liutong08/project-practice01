@@ -1,20 +1,26 @@
 package cn.com.taiji.controller;
 
-import cn.com.taiji.domain.*;
+import cn.com.taiji.domain.Groups;
+import cn.com.taiji.domain.Labels;
+import cn.com.taiji.domain.Posts;
+import cn.com.taiji.domain.UserInfo;
 import cn.com.taiji.dto.GroupUserDto;
 import cn.com.taiji.service.GroupsService;
-import cn.com.taiji.service.PostsService;
-import cn.com.taiji.service.RepliesService;
+import cn.com.taiji.service.UserService;
 import cn.com.taiji.util.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 /**
  * @ Author     ：liutong.
@@ -24,90 +30,52 @@ import java.util.List;
  * @ Version:     $version
  */
 @Controller
+@RequestMapping("/groups")
 public class GroupsController {
     private Logger logger = LoggerFactory.getLogger(GroupsController.class);
 
     @Autowired
     private GroupsService groupsService;
     @Autowired
-    private PostsService postsService;
-    @Autowired
-    private RepliesService repliesService;
+    private UserService userService;
 
-    //假删除讨论组 前台传回groupId，返回message ajax判断
-    @ResponseBody
-    @PostMapping("/updateGroupStatus")
-    public Message deleteGroup(Groups groups) {
-        int i = groupsService.updateGroupStatus(groups.getGroupId());
-        if (i > 0) {
-            return Message.success("删除成功");
-        } else {
-            return Message.fail("删除失败");
-        }
-    }
-
-//    //真删除讨论组，以及与标签中间表，与用户中间组员表，删贴子删回帖
-//    @PostMapping("/realDeleteGroup")
-//    @ResponseBody
-//    public Message realDeleteGroup(Groups groups){
-//        //查询指定讨论组信息
-//        Groups group = groupsService.findGroupById(groups.getGroupId());
-//        //查询制定讨论组的贴子列表
-//        List<Posts> groupPostsList = group.getPostsList();
-////        判断贴子是否为空
-//        if(groupPostsList!=null){
-//            //遍历贴子列表
-//            for (Posts posts : groupPostsList) {
-//                //查找指定贴子
-//                Posts posts1 = postsService.findPostById(posts.getPostId());
-//                //查找指定贴子的回帖
-//                List<Replies> posts1RepliesList = posts1.getRepliesList();
-//                //判断是否有回帖
-//                if(posts1RepliesList!=null) {
-//                    //删除回帖列表
-//                    repliesService.deleteReplyList(posts1RepliesList);
-//                }
-//            }
-//            postsService.deletePostsList(groupPostsList);
-//        }
-//
-//
-//        int i = groupsService.realDeleteGroup(groups.getGroupId());
-//        if(i>0){
-//            return Message.success("删除成功");
-//        }else {
-//            return Message.fail("删除失败");
-//        }
-//    }
-
-    //查询所有的讨论组 带组长信息 返回 讨论组列表 页面 thymeleaf显示 使用DTO封装在一个类中
+    //查询所有的讨论组
     @GetMapping("/findAllGroups")
     public String findAllGroups(Model model) {
 
         logger.info("findAllGroups---");
 
         //全部讨论组
-        List<GroupUserDto> groupUserDtoList = new ArrayList<>();
         List<Groups> groupsList = groupsService.findAllGroups();
+//        model.addAttribute("groupsList",groupsList);
+//        logger.info("groupsList---"+groupsList);
+
+        List<GroupUserDto> groupUserDtoList = new ArrayList<>();
         for (Groups group : groupsList) {
             UserInfo groupUserInfo = group.getUserInfo();
-            GroupUserDto groupUserDto = new GroupUserDto(group, groupUserInfo);
-            groupUserDtoList.add(groupUserDto);
+            if (groupUserInfo != null) {
+                GroupUserDto groupUserDto = new GroupUserDto(group, groupUserInfo);
+                groupUserDtoList.add(groupUserDto);
+            } else {
+                UserInfo userInfo = new UserInfo();
+                userInfo.setUserName("无组长");
+                GroupUserDto groupUserDto = new GroupUserDto(group, userInfo);
+                groupUserDtoList.add(groupUserDto);
+            }
         }
         model.addAttribute("groupUserDtoList", groupUserDtoList);
-
-        //返回至讨论组列表页面
         return "group-back-list";
     }
 
-    //通过GroupId查询指定讨论，组长，组员，标签，贴子 返回 指定讨论组 页面 thymeleaf显示
+    //查询指定讨论组
     @GetMapping("/findOneGroup")
-    public String findOneGroup(Groups groups, Model model) {
+    //@ResponseBody
+    public Model findOneGroup(Integer id, Model model) {
 
         logger.info("findOneGroup---");
 
         //通过ID查询指定讨论组
-        Groups group = groupsService.findGroupById(groups.getGroupId());
+        Groups group = groupsService.findGroupById(id);
         model.addAttribute("group", group);
         logger.info("group---" + group);
 
@@ -131,8 +99,94 @@ public class GroupsController {
         model.addAttribute("groupPostsList", groupPostsList);
         logger.info("groupPostsList---" + groupPostsList);
 
-        //返回至指定讨论组页面
-        return "group-back-show-single";
+        return model;
+    }
+
+    //通过讨论组的ID查询讨论组
+    @GetMapping("/findById")
+    @ResponseBody
+    public Message findById(Integer id) {
+        Groups groupById = groupsService.findGroupById(id);
+        List<UserInfo> userInfoList = groupById.getUserInfoList();
+        return Message.success("成功").add("groupById",groupById).add("userInfoList",userInfoList);
+    }
+
+
+
+
+    //讨论组添加
+    @PostMapping("/addGroup")
+    @ResponseBody
+    public Message addGroup(Groups groups) {
+        logger.info(groups.toString());
+        //判断前台传入的groups是否有ID，没有 就调service新增
+        if (groups.getGroupId() != null) {
+            return Message.fail("添加失败");
+        } else {
+            groups.setGroupCreateTime(new Date());
+            groups.setGroupStatus("1");
+            groupsService.addOrUpdateGroup(groups);
+            return Message.success("添加成功");
+        }
+
+    }
+
+    //添加讨论组组长
+    @PostMapping("/updateGroup")
+    @ResponseBody
+    public Message updateGroup(Integer groupId, Integer userId) {
+
+        logger.info("groupid==" + Integer.toString(groupId) + "----" + "userid==" + Integer.toString(userId));
+        //判断前台传入的groupId是否为空，不为空就调service添加
+        if (groupId != null) {
+            Groups byGroupId = groupsService.findGroupById(groupId);
+            UserInfo user = userService.findByUserId(userId);
+            byGroupId.setUserInfo(user);
+            groupsService.addOrUpdateGroup(byGroupId);
+            return Message.success("更新成功");
+        } else {
+            return Message.fail("更新失败");
+        }
+
+    }
+
+    //修改讨论组信息
+    @PostMapping("/updateGroupInfo")
+    @ResponseBody
+    public Message updateGroupInfo(Groups groups) {
+
+        logger.info("groupid==" + Integer.toString(groups.getGroupId()) + "----");
+        //判断前台传入的groupId是否为空，不为空就调service修改
+        if (groups.getGroupId() != null) {
+            Groups byGroupId = groupsService.findGroupById(groups.getGroupId());
+            byGroupId.setGroupDescription(groups.getGroupDescription());
+            byGroupId.setGroupName(groups.getGroupName());
+            groupsService.addOrUpdateGroup(byGroupId);
+            return Message.success("修改成功");
+
+        } else {
+            return Message.fail("修改失败");
+        }
+
+    }
+
+    //删除讨论组，假删除，实际上是把status字段设置为-1
+    @PostMapping("/updateGroupByStatus")
+    @ResponseBody
+    public Message updateGroupByStatus(Integer groupId) {
+
+        logger.info("groupid==" + Integer.toString(groupId) + "----");
+        //判断前台传入的groupId是否为空，不为空就调service删除
+        if (groupId != null) {
+            Groups byGroupId = groupsService.findGroupById(groupId);
+            byGroupId.setGroupStatus("-1");
+            groupsService.addOrUpdateGroup(byGroupId);
+            return Message.success("删除成功");
+
+        } else {
+            return Message.fail("删除失败");
+        }
+
     }
 
 

@@ -2,6 +2,9 @@ package cn.com.taiji.repository;
 
 import cn.com.taiji.domain.Groups;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 /**
  * @ Author     ：liutong.
@@ -11,5 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @ Version:     $version
  */
 public interface GroupsRepository extends JpaRepository<Groups,Integer> {
-    int deleteByGroupId(Integer id);
+
+   @Query("select g from Groups g  where g.groupStatus='1'")
+    List<Groups> findAllByGroupStatus();
 }

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Mosaddek"/>
+    <meta name="keyword" content="FlatLab, Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina"/>
+
+    <title>讨论组列表</title>
+
+    <link th:href="@{/img/favicon.html}" rel="shortcut icon"/>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/bootstrap-reset.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/assets/font-awesome/css/font-awesome.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/owl.carousel.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/style-responsive.css}" rel="stylesheet" type="text/css"/>
+    <style>
+        td, th {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .modal-dialog {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .modal-content {
+            /*overflow-y: scroll; */
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .modal-body {
+            overflow-y: scroll;
+            position: absolute;
+            top: 55px;
+            bottom: 65px;
+            width: 100%;
+        }
+
+        .modal-header .close {
+            margin-right: 15px;
+        }
+
+        .modal-footer {
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+<div class="row">
+    <div class="col-lg-12">
+        <section class="panel">
+            <header class="panel-heading">
+                讨论组列表
+                &nbsp;&nbsp;<button class="btn btn-info btn-xs" onclick="showAdd()"><i class="icon-plus"></i>
+            </button>
+            </header>
+            <table class="table table-striped table-advance table-hover">
+                <thead>
+                <tr>
+                    <th hidden="hidden"><i class="icon-check"></i> id</th>
+                    <th><i class="icon-picture"></i> 图标</th>
+                    <th><i class="icon-group"></i> 名称</th>
+                    <th><i class="icon-user"></i> 组长</th>
+                    <!--<th><i class="icon-bullhorn"></i> 描述</th>-->
+                    <th><i class="icon-calendar"></i> 创建时间</th>
+                    <th><i class="icon-key"></i> 状态</th>
+                    <th><i class="icon-edit"></i> 操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="dto:${groupUserDtoList}">
+                    <td hidden="hidden" th:text="${dto.group.groupId}">id</td>
+                    <td><img src="${dto.group.groupIco}" style="width:30px;height: 30px; "/></td>
+                    <td th:text="${dto.group.groupName}">groupName</td>
+                    <td th:text="${dto.userInfo.userName}">userName</td>
+                    <!--<td th:text="${dto.group.groupDescription}">groupDescription</td>-->
+                    <td th:text="${dto.group.groupCreateTime}">groupCreateTime</td>
+                    <td>
+                        <span th:class="${dto.group.groupStatus}==1?'label label-success label-mini':'label label-danger label-mini'"
+                              th:text="${dto.group.groupStatus}==1?'可用':'禁用'">
+                        groupStatus
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary btn-xs" th:onclick="'showUpdateWin('+${dto.group.groupId}+')'"><i
+                                class="icon-pencil"></i></button>
+                        <button class="btn btn-danger btn-xs" th:onclick="'deleteGroup('+${dto.group.groupId}+')'"
+                                th:disabled="${dto.group.groupStatus}==1?'false':'true'"><i class="icon-trash "></i>
+                        </button>
+                        <button class="btn btn-primary btn-xs" th:onclick="'showWin('+${dto.group.groupId}+')'"
+                                th:text="${dto.userInfo.userId}!= null?'修改组长':'分配组长'">
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+</div>
+
+<!--讨论组新增模态框-->
+<div class="modal fade" id="addGroup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">新增讨论组</h4>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" method="post">
+                    <div class="form-group">
+                        <label class="control-label">图标:</label>
+                        <input type="file" id="addfile" name="file"/>
+                        <button type="button" class="btn btn-success" onclick="iconUploda()">上传</button>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">组名:</label>
+                        <input type="text" class="form-control" id="addName" name="addName"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">描述:</label>
+                        <textarea class="form-control" id="addDescription" name="addDescription"></textarea>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="addGroup()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--修改讨论组模态框-->
+<div class="modal fade" id="updateGroup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">修改讨论组</h4>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" method="post">
+                    <input type="hidden" id="groupId" name="groupId"/>
+                    <div class="form-group">
+                        <label class="control-label">图标:</label>
+                        <input type="file" id="file" name="file"/>
+                        <button type="button" class="btn btn-success" onclick="iconUploda()">上传</button>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">组名:</label>
+                        <input type="text" class="form-control" id="updateName" name="updateName"/>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">描述:</label>
+                        <textarea class="form-control" id="updateDescription" name="updateDescription"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="updateGroup()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--分配组长-->
+<div class="modal fade bs-example-modal-sm" id="groupLeader" tabindex="-1" role="dialog"
+     >
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">选择组长</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <input type="hidden" id="groupId2" name="groupId"/>
+                    <table class="table table-striped table-bordered bootstrap-datatable datatable" id="userInfo_table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>头像</th>
+                            <th>姓名</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" th:src="@{/js/jquery-1.8.3.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.scrollTo.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.nicescroll.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.sparkline.js}"></script>
+<script type="text/javascript" th:src="@{/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.js}"></script>
+<script type="text/javascript" th:src="@{/js/owl.carousel.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery.customSelect.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/sparkline-chart.js}"></script>
+<script type="text/javascript" th:src="@{/js/easy-pie-chart.js}"></script>
+<script type="text/javascript" th:src="@{/js/common-scripts.js}"></script>
+
+</body>
+
+<script type="text/javascript">
+    function showAdd() {
+        $("#addGroup").modal("show");
+    }
+
+
+    function showUpdateWin(id) {
+        $("#updateGroup").modal("show");
+        $.ajax({
+            url: "/groups/findById",
+            type: "get",
+            data: {id: id},
+            success: function (data) {
+                $('#groupId').val(data.extend.groupById.groupId);
+                $('#updateName').val(data.extend.groupById.groupName);
+                $('#updateDescription').val(data.extend.groupById.groupDescription);
+            }
+
+        })
+
+    }
+
+    function updateGroup() {
+        $.ajax({
+            url: "/groups/updateGroupInfo",
+            type: "post",
+            data: {
+                groupId: $("#groupId").val(),
+                groupName: $("#updateName").val(),
+                groupDescription: $('#updateDescription').val(),
+            },
+            success: function (data) {
+                if (data.code == 1) {
+                    alert(data.msg);
+                    $("#updateGroup").modal("hide");
+                    location.reload();
+                }
+            }
+        })
+    }
+
+    function deleteGroup(id) {
+
+        $.ajax({
+            url: "/groups/updateGroupByStatus?groupId=" + id,
+            type: "post",
+            success: function (data) {
+                if (data.code == 1) {
+                    alert(data.msg);
+                    location.reload();
+                }
+
+            }
+
+        })
+
+    }
+
+    function addGroup() {
+        $.ajax({
+            url: "/groups/addGroup",
+            type: "post",
+            data: {
+                groupName: $("#addName").val(),
+                groupDescription: $("#addDescription").val(),
+            },
+            success: function (data) {
+                if (data.code == 1) {
+                    alert(data.msg);
+                    $("#addGroup").modal("hide");
+                    location.reload();
+                }
+            }
+        })
+    }
+
+    function iconUploda() {
+        $.ajax({})
+    }
+
+
+    function showWin(id) {
+        $("#groupLeader").modal("show");
+        $.ajax({
+            url: "/groups/findById",
+            type: "get",
+            data: {id: id},
+            success: function (data) {
+                $("#userInfo_table tbody").empty();
+                $('#groupId2').val(data.extend.groupById.groupId);
+                $.each(data.extend.userInfoList, function (i,user) {
+                    var userid = $("<td></td>").append(user.userId);
+                    var userpic = $("<td></td>").append(user.userPic);
+                    var username = $("<td></td>").append(user.userName);
+                    //修改组长
+                    var editBtn = $("<a></a>").addClass("btn btn-info edit_btn").append($("<i></i>").addClass("align-content: center")).append("设置");
+                    editBtn.attr("edit-id",user.userId);
+                    var optionEle = $("<tr></tr>")
+                        .append(userid)
+                        .append(userpic)
+                        .append(username)
+                        .append(editBtn);
+                    optionEle.appendTo("#userInfo_table tbody");
+                })
+            }
+
+        })
+    }
+
+    $(document).on("click",".edit_btn",function(){
+        //1、弹出模态框
+        var Id = $(this).attr("edit-id");
+        //alert(Id);
+        $.ajax({
+            url: "/groups/updateGroup",
+            type: "post",
+            data: {
+                groupId: $("#groupId2").val(),
+                userId: Id,
+            },
+            success: function (data) {
+                if (data.code == 1)
+                    alert(data.msg)
+                $("#groupLeader").modal("hide");
+                location.reload();
+            }
+
+        })
+
+    });
+
+    function addGroupLeager() {
+
+
+    }
+</script>
+
+</html>
