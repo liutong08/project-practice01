@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @ Author     ：liutong.
  * @ Date       ：Created in 22:54 2018/12/17
@@ -24,10 +26,44 @@ public class PostsServiceImpl implements PostsService {
     @Transactional()
     @Override
     public Posts findPostById(Integer id) {
-        Posts post=postsRepository.findOne(id);
+        Posts post = postsRepository.findOne(id);
         post.getRepliesList();
         post.getUserInfo();
         post.getGroups();
         return post;
+    }
+
+    //添加讨论组内贴子
+    @Transactional
+    @Override
+    public Posts addPost(Posts post) {
+        Posts save = postsRepository.save(post);
+        return save;
+    }
+
+//    //通过GrouId查询当前讨论组的所有贴子
+//    @Transactional()
+//    @Override
+//    public List<Posts> findPostsByGroupId(Integer id) {
+//        return null;
+//    }
+
+    //删除贴子
+    @Transactional()
+    @Override
+    public int deletePostByPostId(Integer id) {
+        int i = postsRepository.deleteByPostId(id);
+        return i;
+    }
+
+    @Override
+    public List<Posts> findAllPosts() {
+        List<Posts> postsList = postsRepository.findAll();
+        return postsList;
+    }
+
+    @Override
+    public void deletePostsList(List<Posts> postsList) {
+        postsRepository.delete(postsList);
     }
 }

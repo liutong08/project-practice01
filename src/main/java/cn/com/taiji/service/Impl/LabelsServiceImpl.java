@@ -28,12 +28,29 @@ public class LabelsServiceImpl implements LabelsService {
         List<Labels> labelsList=labelsRepository.findAll();
         return labelsList;
     }
-    //查询标签下的所有讨论组
+
+    //通过LabelId查询标签信息以及所有讨论组
     @Transactional()
     @Override
     public Labels findLabelById(Integer id) {
         Labels label=labelsRepository.findOne(id);
         label.getGroupsList();
         return label;
+    }
+
+    //删除标签 涉及到级联删除，主从关系
+    @Transactional()
+    @Override
+    public int deleteLabelByLabelId(Integer id) {
+        int i = labelsRepository.deleteByLabelId(id);
+        return i;
+    }
+
+    //新增标签
+    @Transactional()
+    @Override
+    public Labels addLabel(Labels label) {
+        Labels save = labelsRepository.save(label);
+        return save;
     }
 }

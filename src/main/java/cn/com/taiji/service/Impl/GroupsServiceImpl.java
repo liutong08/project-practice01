@@ -26,6 +26,7 @@ public class GroupsServiceImpl implements GroupsService {
 
     @Autowired
     private GroupsRepository groupsRepository;
+
 //    @Autowired
 //    private LabelsRepository labelsRepository;
 
@@ -52,5 +53,29 @@ public class GroupsServiceImpl implements GroupsService {
         //获取当前讨论组组长
         group.getUserInfo();
         return group;
+    }
+
+    //通过讨论组ID假删除讨论组的信息 更新状态信息
+    @Transactional()
+    @Override
+    public int updateGroupStatus(Integer id) {
+        Groups group = groupsRepository.findOne(id);
+        group.setGroupStatus("-1");
+        Groups save = groupsRepository.save(group);
+        int i;
+        if (save!=null){
+            i=1;
+        }else{
+            i=0;
+        }
+        return i;
+    }
+
+    //讨论组删除
+    @Transactional()
+    @Override
+    public int realDeleteGroup(Integer id) {
+        int i = groupsRepository.deleteByGroupId(id);
+        return i;
     }
 }
