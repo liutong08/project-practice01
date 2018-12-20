@@ -11,4 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @ Version:     $version
  */
 public interface GroupsRepository extends JpaRepository<Groups,Integer> {
+    int deleteByGroupId(Integer id);
 }

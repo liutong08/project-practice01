@@ -11,4 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @ Version:     $version
  */
 public interface PostsRepository extends JpaRepository<Posts,Integer> {
+    int deleteByPostId(Integer id);
 }

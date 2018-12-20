@@ -11,4 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @ Version:     $version
  */
 public interface LabelsRepository extends JpaRepository<Labels,Integer> {
+    int deleteByLabelId(Integer id);
 }
