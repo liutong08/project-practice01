@@ -16,4 +16,8 @@ public interface LabelsService {
     public List<Labels> findAllLabels();
 
     public Labels findLabelById(Integer id);
+
+    public int deleteLabelByLabelId(Integer id);
+
+    public Labels addLabel(Labels label);
 }
