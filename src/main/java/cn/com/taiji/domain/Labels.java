@@ -17,7 +17,7 @@ import java.util.List;
  * @Version
  */
 @Entity
-@Table(name="sys_labels")
+@Table(name = "sys_labels")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,24 +28,27 @@ public class Labels {
     //标签ID，主键
     @Id
     @GeneratedValue
-    @Column(name = "label_id",length = 11)
-    private Integer  labelId;
+    @Column(name = "label_id", length = 11)
+    private Integer labelId;
 
     //标签名
-    @Column(name = "label_name",length = 50)
+    @Column(name = "label_name", length = 50)
     private String labelName;
 
     //标签描述
-    @Column(name = "label_description",length = 255)
+    @Column(name = "label_description", length = 255)
     private String labelDescription;
 
     //预留字段
-    @Column(name = "label_xx",length = 255)
+    @Column(name = "label_xx", length = 255)
     private String labelXx;
-    @Column(name = "label_yy",length =255)
+    @Column(name = "label_yy", length = 255)
     private String labelYy;
     @JsonIgnore
-    @ManyToMany(mappedBy = "labelsList")
+    @ManyToMany()
+    @JoinTable(name = "sys_groups_labels"
+            , joinColumns = {@JoinColumn(name = "label_id")}
+            , inverseJoinColumns = {@JoinColumn(name = "group_id")})
     private List<Groups> groupsList;
 
     @Override
