@@ -59,7 +59,7 @@ public class Labels {
     @JoinTable(name = "sys_blogs_labels"
             , joinColumns = {@JoinColumn(name = "label_id")}
             , inverseJoinColumns = {@JoinColumn(name = "blog_id")})
-    private List<Labels> labels;
+    private List<Blogs> blogsList;
 
     @Override
     public String toString() {
