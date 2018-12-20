@@ -17,6 +17,7 @@
     <link th:href="@{/css/owl.carousel.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{/css/style-responsive.css}" rel="stylesheet" type="text/css"/>
+
     <style>
         td, th {
             text-align: center;
@@ -164,6 +165,7 @@
                     <input type="hidden" id="groupId" name="groupId"/>
                     <div class="form-group">
                         <label class="control-label">图标:</label>
+                        <img src="" height="45px" width="25px"/>
                         <input type="file" id="file" name="file"/>
                         <button type="button" class="btn btn-success" onclick="iconUploda()">上传</button>
                     </div>
@@ -229,6 +231,7 @@
 <script type="text/javascript" th:src="@{/js/sparkline-chart.js}"></script>
 <script type="text/javascript" th:src="@{/js/easy-pie-chart.js}"></script>
 <script type="text/javascript" th:src="@{/js/common-scripts.js}"></script>
+<script type="text/javascript" th:src="@{/layer/layer.js}"></script>
 
 </body>
 
@@ -265,9 +268,11 @@
             },
             success: function (data) {
                 if (data.code == 1) {
-                    alert(data.msg);
-                    $("#updateGroup").modal("hide");
-                    location.reload();
+                    layer.msg(data.msg, {time:2000, icon:1, shift:6}, function () {
+                        $("#updateGroup").modal("hide");
+                        location.reload();
+                    });
+
                 }
             }
         })
@@ -280,8 +285,9 @@
             type: "post",
             success: function (data) {
                 if (data.code == 1) {
-                    alert(data.msg);
-                    location.reload();
+                    layer.msg(data.msg, {time:1500, icon:1, shift:6}, function () {
+                        location.reload();
+                    });
                 }
 
             }
@@ -300,9 +306,10 @@
             },
             success: function (data) {
                 if (data.code == 1) {
-                    alert(data.msg);
-                    $("#addGroup").modal("hide");
-                    location.reload();
+                    layer.msg(data.msg, {time:1500, icon:1, shift:6}, function () {
+                        //$("#addGroup").modal("hide");
+                        location.reload();
+                    });
                 }
             }
         })
@@ -354,9 +361,10 @@
             },
             success: function (data) {
                 if (data.code == 1)
-                    alert(data.msg)
-                $("#groupLeader").modal("hide");
-                location.reload();
+                layer.msg(data.msg, {time:1500, icon:1, shift:6}, function () {
+                    $("#groupLeader").modal("hide");
+                    location.reload();
+                });
             }
 
         })

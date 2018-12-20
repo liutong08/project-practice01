@@ -61,7 +61,7 @@ public class Blogs {
     @Column(name="blog_yy",length = 255)
     private String blogYy;
 
-    //博客和评论表是多对多关系
+    //博客和标签表是多对多关系
     @JsonIgnore
     @ManyToMany
     @JoinTable(name = "sys_blogs_labels"
