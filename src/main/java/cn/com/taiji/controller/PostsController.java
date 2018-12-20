@@ -100,7 +100,7 @@ public class PostsController {
         }
         model.addAttribute("postUserGroupDtos", postUserGroupDtos);
 
-        return "post_back_list";
+        return "post-back-list";
     }
 
     //后台查询指定帖子 传回postId 传出指定贴子信息 返回到指定页面，tyhmeleaf显示
@@ -111,7 +111,7 @@ public class PostsController {
         Groups groups = post.getGroups();
         PostUserGroupDto postUserGroupDto = new PostUserGroupDto(post, userInfo, groups);
         model.addAttribute("postUserGroupDto", postUserGroupDto);
-        return "post_back_show_single";
+        return "post-back-show-single";
     }
 
     //通过贴子postId查询贴子内容，回帖以及回帖作者  前台返回id 返回 指定贴子 页面 thymeleaf显示

@@ -63,7 +63,7 @@ public class LabelsController {
         model.addAttribute("labelsList", labelsList);
         logger.info("labelsList---" + labelsList);
 
-        return "label_back_list";
+        return "label-back-list";
     }
 
     //通过LabelId查询标签信息，讨论组信息 前台传回labelId 返回 指定标签 页面 使用thymeleaf显示
@@ -82,6 +82,6 @@ public class LabelsController {
         model.addAttribute("labelGroupsList", labelGroupsList);
         logger.info("labelGroupsList---" + labelGroupsList);
 
-        return "label_back_show_single";
+        return "label-back-show-single";
     }
 }
