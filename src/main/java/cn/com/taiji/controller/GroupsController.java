@@ -8,19 +8,23 @@ import cn.com.taiji.dto.GroupUserDto;
 import cn.com.taiji.service.GroupsService;
 import cn.com.taiji.service.UserService;
 import cn.com.taiji.util.Message;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.websocket.server.PathParam;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * @ Author     ：liutong.
@@ -39,16 +43,40 @@ public class GroupsController {
     @Autowired
     private UserService userService;
 
-    //查询所有的讨论组
-    @GetMapping("/findAllGroups")
-    public String findAllGroups(Model model) {
+    //查询所有的讨论组(分页)
+    @GetMapping ("/findAllPages/{num}")
+    public String findAllPages(@PathVariable Integer num, Model model){
 
-        logger.info("findAllGroups---");
+        Page<Groups> groupsPage = groupsService.findGroupsNoCriteria(num, 5);
+        //是否有下一页
+        boolean hasNext = groupsPage.hasNext();
+        model.addAttribute("hasNext",hasNext);
+        logger.info ("hasNext"+hasNext);
+        //判断是否有上一页
+        boolean hasPrevious = groupsPage.hasPrevious();
+        logger.info ("hasPrevious"+hasPrevious);
+        model.addAttribute("hasPrevious",hasPrevious);
+        //总共的页数
+        int totalPages = groupsPage.getTotalPages();//返回分页总数。
+        logger.info ("分页总数"+totalPages);
+        model.addAttribute("totalPages",totalPages);
+        //总条数
+        long totalElements = groupsPage.getTotalElements();//返回元素总数。
+        logger.info("总共多少条"+totalElements);
+        model.addAttribute("totalElements",totalElements);
 
-        //全部讨论组
-        List<Groups> groupsList = groupsService.findAllGroups();
-//        model.addAttribute("groupsList",groupsList);
-//        logger.info("groupsList---"+groupsList);
+        List<Groups> groupsList = groupsPage.getContent();//将所有数据返回为List
+        logger.info("当前页的所有数据"+groupsList);
+        //当前的页数号
+        int pageNum = groupsPage.getNumber();
+        model.addAttribute("pageNum",pageNum);
+        logger.info("pageNum"+pageNum);
+        //每页的显示数量
+        int pageSize = groupsPage.getNumberOfElements();
+        logger.info("pageSize"+pageSize);
+
+        model.addAttribute("pageSize",pageSize);
+        model.addAttribute("groupsPage",groupsPage);
 
         List<GroupUserDto> groupUserDtoList = new ArrayList<>();
         for (Groups group : groupsList) {
@@ -65,7 +93,35 @@ public class GroupsController {
         }
         model.addAttribute("groupUserDtoList", groupUserDtoList);
         return "group-back-list";
+
     }
+//    //查询所有的讨论组
+//    @GetMapping("/findAllGroups")
+//    public String findAllGroups(Model model) {
+//
+//        logger.info("findAllGroups---");
+//
+//        //全部讨论组
+//        List<Groups> groupsList = groupsService.findAllGroups();
+////        model.addAttribute("groupsList",groupsList);
+////        logger.info("groupsList---"+groupsList);
+//
+//        List<GroupUserDto> groupUserDtoList = new ArrayList<>();
+//        for (Groups group : groupsList) {
+//            UserInfo groupUserInfo = group.getUserInfo();
+//            if (groupUserInfo != null) {
+//                GroupUserDto groupUserDto = new GroupUserDto(group, groupUserInfo);
+//                groupUserDtoList.add(groupUserDto);
+//            } else {
+//                UserInfo userInfo = new UserInfo();
+//                userInfo.setUserName("无组长");
+//                GroupUserDto groupUserDto = new GroupUserDto(group, userInfo);
+//                groupUserDtoList.add(groupUserDto);
+//            }
+//        }
+//        model.addAttribute("groupUserDtoList", groupUserDtoList);
+//        return "group-back-list";
+//    }
 
     //查询指定讨论组
     @GetMapping("/findOneGroup")
@@ -108,25 +164,43 @@ public class GroupsController {
     public Message findById(Integer id) {
         Groups groupById = groupsService.findGroupById(id);
         List<UserInfo> userInfoList = groupById.getUserInfoList();
-        return Message.success("成功").add("groupById",groupById).add("userInfoList",userInfoList);
+        return Message.success("成功").add("groupById", groupById).add("userInfoList", userInfoList);
     }
-
-
 
 
     //讨论组添加
     @PostMapping("/addGroup")
     @ResponseBody
-    public Message addGroup(Groups groups) {
+    public Message addGroup(Groups groups, MultipartFile file) throws IOException {
         logger.info(groups.toString());
+
+
         //判断前台传入的groups是否有ID，没有 就调service新增
         if (groups.getGroupId() != null) {
             return Message.fail("添加失败");
         } else {
-            groups.setGroupCreateTime(new Date());
-            groups.setGroupStatus("1");
-            groupsService.addOrUpdateGroup(groups);
-            return Message.success("添加成功");
+            if (file != null) {
+                //随机生成文件名
+                String filename = UUID.randomUUID().toString().replace("-", "");
+                logger.info("filename====" + filename);
+                //获取文件的后缀
+                String ext = FilenameUtils.getExtension(file.getOriginalFilename());
+                logger.info("ext====" + ext);
+                //写入文件到指定位置
+                file.transferTo(new File(filename + "." + ext));
+                //把文件名写入数据库
+                groups.setGroupIco(filename + "." + ext);
+                groups.setGroupCreateTime(new Date());
+                groups.setGroupStatus("1");
+                groupsService.addOrUpdateGroup(groups);
+                return Message.success("添加成功");
+            } else {
+                groups.setGroupCreateTime(new Date());
+                groups.setGroupStatus("1");
+                groupsService.addOrUpdateGroup(groups);
+                return Message.success("添加成功");
+            }
+
         }
 
     }
@@ -153,16 +227,35 @@ public class GroupsController {
     //修改讨论组信息
     @PostMapping("/updateGroupInfo")
     @ResponseBody
-    public Message updateGroupInfo(Groups groups) {
+    public Message updateGroupInfo(Groups groups, MultipartFile file) throws IOException {
 
         logger.info("groupid==" + Integer.toString(groups.getGroupId()) + "----");
         //判断前台传入的groupId是否为空，不为空就调service修改
         if (groups.getGroupId() != null) {
             Groups byGroupId = groupsService.findGroupById(groups.getGroupId());
-            byGroupId.setGroupDescription(groups.getGroupDescription());
-            byGroupId.setGroupName(groups.getGroupName());
-            groupsService.addOrUpdateGroup(byGroupId);
-            return Message.success("修改成功");
+            //判断传入的文件是否存在，存在则带文件更新
+            if (file != null) {
+                //随机生成文件名
+                String filename1 = UUID.randomUUID().toString().replace("-", "");
+                logger.info("filename1====" + filename1);
+                //获取文件的后缀
+                String ext1 = FilenameUtils.getExtension(file.getOriginalFilename());
+                logger.info("ext1====" + ext1);
+                //写入文件到指定位置
+                file.transferTo(new File(filename1 + "." + ext1));
+                byGroupId.setGroupDescription(groups.getGroupDescription());
+                byGroupId.setGroupName(groups.getGroupName());
+                byGroupId.setGroupIco(filename1 + "." + ext1);
+                groupsService.addOrUpdateGroup(byGroupId);
+                return Message.success("修改成功");
+            } else {
+                //file不存在则不带文件更新
+                byGroupId.setGroupDescription(groups.getGroupDescription());
+                byGroupId.setGroupName(groups.getGroupName());
+                groupsService.addOrUpdateGroup(byGroupId);
+                return Message.success("修改成功");
+            }
+
 
         } else {
             return Message.fail("修改失败");
@@ -179,12 +272,19 @@ public class GroupsController {
         //判断前台传入的groupId是否为空，不为空就调service删除
         if (groupId != null) {
             Groups byGroupId = groupsService.findGroupById(groupId);
-            byGroupId.setGroupStatus("-1");
-            groupsService.addOrUpdateGroup(byGroupId);
-            return Message.success("删除成功");
+            //页面公用一个按钮对status进行修改，不同status值对应不同的状态
+            if (byGroupId.getGroupStatus().equals("1")) {
+                byGroupId.setGroupStatus("-1");
+                groupsService.addOrUpdateGroup(byGroupId);
+            } else {
+                byGroupId.setGroupStatus("1");
+                groupsService.addOrUpdateGroup(byGroupId);
+            }
+
+            return Message.success("操作成功");
 
         } else {
-            return Message.fail("删除失败");
+            return Message.fail("操作失败");
         }
 
     }
