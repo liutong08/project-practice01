@@ -30,6 +30,7 @@ import java.util.List;
  */
 
 @Controller
+@RequestMapping("/posts")
 public class PostsController {
     private Logger logger = LoggerFactory.getLogger(GroupsController.class);
 
@@ -103,15 +104,13 @@ public class PostsController {
         return "post-back-list";
     }
 
-    //后台查询指定帖子 传回postId 传出指定贴子信息 返回到指定页面，tyhmeleaf显示
+    //后台查询指定帖子 传回postId 传出指定贴子信息 返回到模态框中
     @GetMapping("/showPost")
-    public String showPost(Posts posts, Model model) {
-        Posts post = postsService.findPostById(posts.getPostId());
+    @ResponseBody
+    public Message showPost(Integer postId) {
+        Posts post = postsService.findPostById(postId);
         UserInfo userInfo = post.getUserInfo();
-        Groups groups = post.getGroups();
-        PostUserGroupDto postUserGroupDto = new PostUserGroupDto(post, userInfo, groups);
-        model.addAttribute("postUserGroupDto", postUserGroupDto);
-        return "post-back-show-single";
+        return Message.success("成功").add("post", post).add("userInfo", userInfo);
     }
 
     //通过贴子postId查询贴子内容，回帖以及回帖作者  前台返回id 返回 指定贴子 页面 thymeleaf显示
