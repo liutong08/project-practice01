@@ -1,6 +1,7 @@
 package cn.com.taiji.service;
 
 import cn.com.taiji.domain.Groups;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -18,5 +19,6 @@ public interface GroupsService {
 
     //新增讨论组
     boolean addOrUpdateGroup(Groups groups);
+    Page<Groups> findGroupsNoCriteria(Integer page, Integer size);
 
 }
