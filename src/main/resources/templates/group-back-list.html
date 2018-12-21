@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -17,6 +18,7 @@
     <link th:href="@{/css/owl.carousel.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{/css/style-responsive.css}" rel="stylesheet" type="text/css"/>
+
 
     <style>
         td, th {
@@ -88,7 +90,9 @@
                 <tbody>
                 <tr th:each="dto:${groupUserDtoList}">
                     <td hidden="hidden" th:text="${dto.group.groupId}">id</td>
-                    <td><img src="${dto.group.groupIco}" style="width:30px;height: 30px; "/></td>
+                    <td><img
+                            th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${dto.group.groupIco}"
+                            style="width: 30px;height: 30px"/></td>
                     <td th:text="${dto.group.groupName}">groupName</td>
                     <td th:text="${dto.userInfo.userName}">userName</td>
                     <!--<td th:text="${dto.group.groupDescription}">groupDescription</td>-->
@@ -100,12 +104,14 @@
                         </span>
                     </td>
                     <td>
-                        <button class="btn btn-primary btn-xs" th:onclick="'showUpdateWin('+${dto.group.groupId}+')'"><i
-                                class="icon-pencil"></i></button>
+                        <button class="btn btn-primary btn-xs" th:onclick="'showUpdateWin('+${dto.group.groupId}+')'"
+                                th:disabled="${dto.group.groupStatus}==1?'false':'true'"><i class="icon-pencil"></i>
+                        </button>
                         <button class="btn btn-danger btn-xs" th:onclick="'deleteGroup('+${dto.group.groupId}+')'"
-                                th:disabled="${dto.group.groupStatus}==1?'false':'true'"><i class="icon-trash "></i>
+                                th:text="${dto.group.groupStatus}==1?'删除':'恢复'">
                         </button>
                         <button class="btn btn-primary btn-xs" th:onclick="'showWin('+${dto.group.groupId}+')'"
+                                th:disabled="${dto.group.groupStatus}==1?'false':'true'"
                                 th:text="${dto.userInfo.userId}!= null?'修改组长':'分配组长'">
                         </button>
                     </td>
@@ -115,6 +121,25 @@
         </section>
     </div>
 </div>
+<nav aria-label="Page navigation " style="align-content: center">
+    <ul class="pagination">
+        <li >
+            <a th:if="${hasPrevious}==false" th:href="@{#}">上一页</a>
+        </li>
+        <li>
+            <a th:if="${hasPrevious}==true" th:href="@{/groups/findAllPages/{num}(num=${pageNum}-1)}">上一页</a>
+        </li>
+        <li th:each="i:${#numbers.sequence(1,totalPages)}" th:class="${i==pageNum+1}?'page-item active':'page-item'">
+            <a class="page-link" th:href="@{/groups/findAllPages/{num}(num=${i}-1)}" th:text="${i}"></a>
+        </li>
+        <li >
+            <a  th:if="${hasNext}==false" th:href="@{#}">下一页</a>
+        </li>
+        <li >
+             <a  th:if="${hasNext}==true" th:href="@{/groups/findAllPages/{num}(num=${pageNum}+1)}">下一页</a>
+        </li>
+    </ul>
+</nav>
 
 <!--讨论组新增模态框-->
 <div class="modal fade" id="addGroup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
@@ -130,7 +155,6 @@
                     <div class="form-group">
                         <label class="control-label">图标:</label>
                         <input type="file" id="addfile" name="file"/>
-                        <button type="button" class="btn btn-success" onclick="iconUploda()">上传</button>
                     </div>
                     <div class="form-group">
                         <label class="control-label">组名:</label>
@@ -165,9 +189,8 @@
                     <input type="hidden" id="groupId" name="groupId"/>
                     <div class="form-group">
                         <label class="control-label">图标:</label>
-                        <img src="" height="45px" width="25px"/>
+                        <img id="img" width="50px" height="48px" style="border-radius: 10px"/>
                         <input type="file" id="file" name="file"/>
-                        <button type="button" class="btn btn-success" onclick="iconUploda()">上传</button>
                     </div>
                     <div class="form-group">
                         <label class="control-label">组名:</label>
@@ -189,7 +212,7 @@
 
 <!--分配组长-->
 <div class="modal fade bs-example-modal-sm" id="groupLeader" tabindex="-1" role="dialog"
-     >
+>
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -233,6 +256,8 @@
 <script type="text/javascript" th:src="@{/js/common-scripts.js}"></script>
 <script type="text/javascript" th:src="@{/layer/layer.js}"></script>
 
+
+
 </body>
 
 <script type="text/javascript">
@@ -251,6 +276,8 @@
                 $('#groupId').val(data.extend.groupById.groupId);
                 $('#updateName').val(data.extend.groupById.groupName);
                 $('#updateDescription').val(data.extend.groupById.groupDescription);
+                $("#img").attr("src", "http://localhost:8080/" + data.extend.groupById.groupIco);
+
             }
 
         })
@@ -258,17 +285,29 @@
     }
 
     function updateGroup() {
+
+        var formData = new FormData();
+        var file = $('#file').get(0).files[0];
+        var groupName = $("#updateName").val();
+        var groupDescription = $("#updateDescription").val();
+        var groupId = $("#groupId").val();
+
+
+        formData.append("file", file);
+        formData.append("groupName", groupName);
+        formData.append("groupDescription", groupDescription);
+        formData.append("groupId", groupId);
         $.ajax({
             url: "/groups/updateGroupInfo",
             type: "post",
-            data: {
-                groupId: $("#groupId").val(),
-                groupName: $("#updateName").val(),
-                groupDescription: $('#updateDescription').val(),
-            },
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false, //不设置内容类型
+            processData: false, //不处理数据
             success: function (data) {
                 if (data.code == 1) {
-                    layer.msg(data.msg, {time:2000, icon:1, shift:6}, function () {
+                    layer.msg(data.msg, {time: 2000, icon: 1, shift: 6}, function () {
                         $("#updateGroup").modal("hide");
                         location.reload();
                     });
@@ -285,7 +324,7 @@
             type: "post",
             success: function (data) {
                 if (data.code == 1) {
-                    layer.msg(data.msg, {time:1500, icon:1, shift:6}, function () {
+                    layer.msg(data.msg, {time: 1500, icon: 1, shift: 6}, function () {
                         location.reload();
                     });
                 }
@@ -296,17 +335,29 @@
 
     }
 
+
     function addGroup() {
+        var formData = new FormData();
+        var file = $('#addfile').get(0).files[0];
+        var groupName = $("#addName").val();
+        var groupDescription = $("#addDescription").val();
+
+
+        formData.append("file", file);
+        formData.append("groupName", groupName);
+        formData.append("groupDescription", groupDescription);
+
         $.ajax({
             url: "/groups/addGroup",
             type: "post",
-            data: {
-                groupName: $("#addName").val(),
-                groupDescription: $("#addDescription").val(),
-            },
+            async: false,
+            cache: false,
+            contentType: false, //不设置内容类型
+            processData: false, //不处理数据
+            data: formData,
             success: function (data) {
                 if (data.code == 1) {
-                    layer.msg(data.msg, {time:1500, icon:1, shift:6}, function () {
+                    layer.msg(data.msg, {time: 1500, icon: 1, shift: 6}, function () {
                         //$("#addGroup").modal("hide");
                         location.reload();
                     });
@@ -329,13 +380,13 @@
             success: function (data) {
                 $("#userInfo_table tbody").empty();
                 $('#groupId2').val(data.extend.groupById.groupId);
-                $.each(data.extend.userInfoList, function (i,user) {
+                $.each(data.extend.userInfoList, function (i, user) {
                     var userid = $("<td></td>").append(user.userId);
                     var userpic = $("<td></td>").append(user.userPic);
                     var username = $("<td></td>").append(user.userName);
                     //修改组长
                     var editBtn = $("<a></a>").addClass("btn btn-info edit_btn").append($("<i></i>").addClass("align-content: center")).append("设置");
-                    editBtn.attr("edit-id",user.userId);
+                    editBtn.attr("edit-id", user.userId);
                     var optionEle = $("<tr></tr>")
                         .append(userid)
                         .append(userpic)
@@ -348,7 +399,7 @@
         })
     }
 
-    $(document).on("click",".edit_btn",function(){
+    $(document).on("click", ".edit_btn", function () {
         //1、弹出模态框
         var Id = $(this).attr("edit-id");
         //alert(Id);
@@ -361,20 +412,31 @@
             },
             success: function (data) {
                 if (data.code == 1)
-                layer.msg(data.msg, {time:1500, icon:1, shift:6}, function () {
-                    $("#groupLeader").modal("hide");
-                    location.reload();
-                });
+                    layer.msg(data.msg, {time: 1500, icon: 1, shift: 6}, function () {
+                        $("#groupLeader").modal("hide");
+                        location.reload();
+                    });
             }
 
         })
 
     });
 
-    function addGroupLeager() {
-
-
-    }
+    // $(function() {
+    //     $("#pagination3").pagination({
+    //         currentPage: 4,
+    //         totalPage: 16,
+    //         isShow: true,
+    //         count: 7,
+    //         homePageText: "首页",
+    //         endPageText: "尾页",
+    //         prevPageText: "上一页",
+    //         nextPageText: "下一页",
+    //         callback: function(current) {
+    //             $("#current3").text(current)
+    //         }
+    //     });
+    // });
 </script>
 
 </html>
