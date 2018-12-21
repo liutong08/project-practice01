@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +23,20 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+//    跳转到前台
+    @RequestMapping(value = "/hello")
+    public String tiao(Model model){
+        model.addAttribute("userInfo",new UserInfo());
+        return "main";
+    }
+
+
+    //    跳转到前台
+    @RequestMapping(value = "/hello1")
+    public String zhuan(Model model){
+        return "userInfo-list";
+    }
+
 
 
 //前台个人中心
@@ -29,10 +44,11 @@ public class UserController {
 
     @GetMapping(value = "/selectOne/{id}")
     @ResponseBody
-    public Message FindByUserId(@PathVariable("id") Integer userId, HttpServletResponse response) {
+    public Message FindByUserId(@PathVariable("id") Integer userId, HttpServletResponse response, Model model) {
         response.setCharacterEncoding("UTF-8");
         UserInfo user = userService.findByUserId(userId);
        if(null!= user){
+           model.addAttribute("user",user);
            return Message.success("通过Id查询成功！");
        } else {
            return Message.fail("通过Id查询失败！");
@@ -81,11 +97,12 @@ public class UserController {
 //    查询符合状态的用户信息
     @RequestMapping(value = "/findStatusUser")
     @ResponseBody
-    public Message findStatusUser() {
+    public Message findStatusUser(Model model) {
 
-        List<UserInfo> userinfos = userService.findByUserStatus("1");
-        if (userinfos != null) {
-             return Message.success("查询成功！").add("user",userinfos);
+        List<UserInfo> userInfos = userService.findByUserStatus("1");
+        if (userInfos != null) {
+            model.addAttribute("userInfos",userInfos);
+             return Message.success("查询成功！").add("user",userInfos);
         } else {
             return Message.fail("查询失败！");
         }

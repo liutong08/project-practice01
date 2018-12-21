@@ -38,7 +38,7 @@ public class UserInfo {
     private String userLoginName;
 
     //用户登录密码
-    @Column(name = "user_password", length = 50, nullable = false)
+    @Column(name = "user_password", length = 100, nullable = false)
     private String userPassword;
 
     //用户电话
