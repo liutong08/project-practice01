@@ -1,7 +1,10 @@
 package cn.com.taiji.repository;
 
+import cn.com.taiji.domain.Blogs;
 import cn.com.taiji.domain.Labels;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 /**
  * @ Author     ：liutong.
