@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>太极</title>
+    <!-- Bootstrap Core CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>
+    <!-- Custom Fonts -->
+    <link th:href="@{/Reception_font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
+    <!-- Custom CSS -->
+    <link th:href="@{/Reception_css/patros.css}" rel="stylesheet"/>
+    <!--标签-->
+</head>
+<body data-spy="scroll">
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <!--PATROS头部为图片，不是文本-->
+            <a class="navbar-brand" href="index.html"><img th:src="@{/images/logo.png}" alt="company logo"/></a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right custom-menu">
+                <li><a href="/jump/index">首页</a></li>
+                <li><a href="/jump/blogsFrontIndex">博客</a></li>
+                <li class="active"><a href="/frontGroup/groupsIndex">讨论组</a></li>
+                <li><a href="/jump/personalInfoIndex">个人中心</a></li>
+                <li><a href="/jump/login">登录</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- 讨论组 -->
+<section class="container blog">
+    <div class="row">
+        <!-- Blog Column -->
+        <div class="col-md-8">
+            <h1 class="page-header sidebar-title">
+                讨论组首页
+            </h1>
+            <!-- First Blog Post -->
+            <div class="row blogu" th:each="guDto:${groupUserDtoList}">
+                <div class="col-sm-4 col-md-4 ">
+                    <div class="blog-thumb">
+                        <a th:href="'/frontGroup/groupSingle?groupId='+${guDto.group.groupId}">
+                            <img class="img-responsive"
+                                 th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${guDto.group.groupIco}"
+                                 th:alt="${guDto.group.groupIco}"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-8 col-md-8">
+                    <h2 class="blog-title">
+                        <a th:href="'/frontGroup/groupSingle?groupId='+${guDto.group.groupId}" th:text="${guDto.group.groupName}"></a>
+                    </h2>
+                    <p><i class="fa fa-calendar-o" th:text="${guDto.group.groupCreateTime}"></i>
+                        <span class="comments-padding"></span>
+                        <i class="fa fa fa-user"
+                           th:text="${guDto.userInfo.userName}==null?'组长未分配':${guDto.userInfo.userName}"></i>
+                    </p>
+                    <p th:text="${guDto.group.groupDescription}"></p>
+                </div>
+            </div>
+            <hr/>
+
+            <div class="text-center">
+                <ul class="pagination">
+                    <li class="active"><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li><a href="#">Next</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Blog Sidebar Column -->
+        <aside class="col-md-4 sidebar-padding">
+            <!-- 标签部分 -->
+            <div class="blog-sidebar">
+                <h4 class="sidebar-title"><i class="fa fa-list-ul"></i> 标签</h4>
+                <hr/>
+                <ul class="sidebar-list" th:each="labels:${labelsList}">
+                    <li><a th:href="'/frontGroup/groupsIndexByLabel?labelId='+${labels.labelId}"
+                           th:text="${labels.labelName}"
+                           th:style="${label.labelId==labels.labelId}?'color:#E96840;':''"> 标签</a></li>
+                </ul>
+
+            </div>
+
+            <!-- Recent Posts -->
+            <div class="blog-sidebar">
+                <h4 class="sidebar-title"><i class="fa fa-align-left"></i> 最新讨论帖</h4>
+                <hr style="margin-bottom: 5px;"/>
+
+                <div class="media" th:each="post:${postUserGroupDtoList}">
+                    <a class="pull-left" th:href="'/frontGroup/postSingle?postId='+${post.posts.postId}">
+                        <img class="img-responsive media-object"
+                             th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${post.posts.postPic}"
+                             th:alt="${post.posts.postPic}"/>
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading"><a th:href="'/frontGroup/postSingle?postId='+${post.posts.postId}"
+                                                     th:text="${post.posts.postTitle}">Post title 1</a></h4>
+                        作者：<small th:text="${post.userInfo.userName}"></small>
+                        &nbsp;讨论组：<small th:text="${post.groups.groupName}"></small>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="blog-sidebar">
+                <h4 class="sidebar-title"><i class="fa fa-comments"></i> 最新回帖</h4>
+                <hr style="margin-bottom: 5px;"/>
+                <ul class="sidebar-list" th:each="ruDto:${replyUserDtoList}">
+                    <li>
+                        <h5 class="blog-title" th:text="${ruDto.userInfo.userName}"></h5>
+                        <p th:text="${ruDto.replies.replyContent}"></p>
+                    </li>
+                </ul>
+            </div>
+
+        </aside>
+    </div>
+</section>
+
+<footer id="footer">
+    <div class="container">
+        <div class="row myfooter">
+            <div class="col-sm-6">
+                <div class="pull-left">
+                    Copyright &copy; 2018.太极计算机有限公司 <a href="http://www.taiji.com.cn/" target="_blank"></a>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="pull-right">风之彩团队小组</div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+<!-- Bootstrap Core JavaScript -->
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+
+<!--Jquery Smooth Scrolling-->
+<script>
+    $(document).ready(function () {
+        $('.custom-menu a[href^="#"], .intro-scroller .inner-link').on('click', function (e) {
+            e.preventDefault();
+
+            var target = this.hash;
+            var $target = $(target);
+
+            $('html, body').stop().animate({
+                'scrollTop': $target.offset().top
+            }, 900, 'swing', function () {
+                window.location.hash = target;
+            });
+        });
+
+        $('a.page-scroll').bind('click', function (event) {
+            var $anchor = $(this);
+            $('html, body').stop().animate({
+                scrollTop: $($anchor.attr('href')).offset().top
+            }, 1500, 'easeInOutExpo');
+            event.preventDefault();
+        });
+
+        $(".nav a").on("click", function () {
+            $(".nav").find(".active").removeClass("active");
+            $(this).parent().addClass("active");
+        });
+
+        $('body').append('<div id="toTop" class="btn btn-primary color1"><span class="glyphicon glyphicon-chevron-up"></span></div>');
+        $(window).scroll(function () {
+            if ($(this).scrollTop() != 0) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        });
+        $('#toTop').click(function () {
+            $("html, body").animate({scrollTop: 0}, 700);
+            return false;
+        });
+
+    });
+</script>
+
+</body>
+</html>
