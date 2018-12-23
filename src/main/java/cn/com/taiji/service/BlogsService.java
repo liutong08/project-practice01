@@ -1,9 +1,11 @@
 package cn.com.taiji.service;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 import cn.com.taiji.domain.Blogs;
 import cn.com.taiji.domain.Groups;
+import cn.com.taiji.domain.Labels;
 import org.springframework.data.domain.Page;
 
 public interface BlogsService {
@@ -18,7 +20,9 @@ public interface BlogsService {
 	List<Blogs> findByBlogStatus(String num);
 
 	public List<Blogs> findAllBlogs();
-//	分页
+//	分页,
 	Page<Blogs> findBlogsNoCriteria(Integer page, Integer size);
-
+	Page<Blogs> findBlogsCriteria(Integer labelId,Integer page);
+////	真删除
+boolean deleteByBlogId(Integer blogId);
 }

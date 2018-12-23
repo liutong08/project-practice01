@@ -1,20 +1,29 @@
 package cn.com.taiji.service.Impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import cn.com.taiji.domain.Groups;
-import groovy.util.IFileNameFinder;
+
+
+import cn.com.taiji.domain.Labels;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cn.com.taiji.domain.Blogs;
 import cn.com.taiji.repository.BlogsRepository;
 import cn.com.taiji.service.BlogsService;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 @Service
 public class BlogsServiceImpl implements BlogsService{
@@ -120,11 +129,32 @@ public class BlogsServiceImpl implements BlogsService{
 		return blogsList;
 	}
 
+
+	@Override
+	public Page<Blogs> findBlogsCriteria(Integer labelId,Integer page) {
+		Pageable pageable = new PageRequest(page, 5, Sort.Direction.ASC, "blog_id");
+		Page<Blogs> blogs = blogsRepository.blogsAndLabels(labelId, pageable);
+		return blogs;
+	}
+
 	//分页查询所有
 	@Override
 	public Page<Blogs> findBlogsNoCriteria(Integer page, Integer size) {
 		Pageable pageable = new PageRequest(page, size, Sort.Direction.ASC, "blogId");
 		return blogsRepository.findAll(pageable);
+	}
+
+
+
+	//真删除
+	@Override
+	public boolean deleteByBlogId(Integer blogId) {
+		int i = blogsRepository.deleteByBlogId(blogId);
+		if (i > 0 ){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 }
