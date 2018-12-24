@@ -278,7 +278,7 @@ public class GroupsController {
     }
 
     //前台查询单个讨论组  郑伟
-    @RequestMapping("/getGroupsById/{groupsId}")
+    @GetMapping("/getGroupsById/{groupsId}")
     public String getGroupsById(@PathVariable Integer groupsId,Model model){
         Groups group = groupsService.findGroupById(groupsId);
         //讨论组组长

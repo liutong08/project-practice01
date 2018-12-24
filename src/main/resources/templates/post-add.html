@@ -54,25 +54,26 @@
 <script type="text/javascript">
 
 
-    function jump() {
-        window.location.href = "/groups/getGroupsById/"+$("#groupId").val();
+    function jump(groupId) {
+
+        window.location.href = "/groups/getGroupsById/"+groupId;
        // Response.Redirect(');
         window.event.returnValue=false;
     }
 
-    function addBlog() {
+    function addPost() {
         var formData = new FormData();
         var file = $('#file').get(0).files[0];
         var title = $("#title").val();
         var content = $("#content").val();
         var userId = $("#userId").val();
-        var labelId=$("#groupId").val();
+        var groupId=$("#groupId").val();
 
         formData.append("file", file);
-        formData.append("blogTitle", title);
-        formData.append("blogContent", content);
+        formData.append("postTitle", title);
+        formData.append("postContent", content);
         formData.append("userId", userId);
-        formData.append("labelId", labelId);
+        formData.append("groupId", groupId);
         $.ajax({
             url: "/posts/addPost",
             type: "post",
@@ -83,11 +84,14 @@
             data: formData,
             success: function (data) {
                 if (data.code == 1) {
-                    layer.msg(data.msg, {time: 1500, icon: 1, shift: 0}, function () {});
-                    jump();
+                    layer.msg(data.msg, {time: 1500, icon: 1, shift: 0}, function () {
+                    });
+                    jump(groupId);
+
                 } else {
-                    layer.msg(data.msg, {time: 1500, icon: 1, shift: 0}, function () {});
-                    jump();
+                    layer.msg(data.msg, {time: 1500, icon: 1, shift: 0}, function () {
+                    });
+                    jump(groupId);
                 }
             }
         });
