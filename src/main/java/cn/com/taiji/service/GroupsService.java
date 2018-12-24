@@ -21,4 +21,6 @@ public interface GroupsService {
     boolean addOrUpdateGroup(Groups groups);
     Page<Groups> findGroupsNoCriteria(Integer page, Integer size);
 
+    List<Groups> findAllByGroupStatus();
+
 }
