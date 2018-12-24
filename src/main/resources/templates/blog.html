@@ -1,18 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	  xmlns:th="http://www.thymeleaf.org">
-<!--xmlns:th="http://www.thymeleaf.org"-->
 	<head>
 		<meta charset="utf-8"/>
         <title>博客主页</title>
-        <!-- Bootstrap Core CSS -->
-		<script type="text/javascript" th:src="@{/Reception_js/tags.js}"></script>
-		<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
-        <!-- Custom Fonts -->
-        <link th:href="@{/Reception_font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
-        <!-- Custom CSS -->
-		<link th:href="@{/Reception_css/patros.css}" rel="stylesheet"/>
-		<!--标签-->
+
 		<style type="text/css">
 			body{ font-family:"微软雅黑", Arial, sans-serif;} #main{border:none; background:none;}
 
@@ -37,34 +29,8 @@
 
 	<body data-spy="scroll">
 
-	<!-- 头部 -->
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-			<div class="container">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<!--PATROS头部为图片，不是文本-->
-					<a class="navbar-brand" href="index.html"><img th:src="@{/images/logo.png}" alt="company logo"/></a>
-				</div>
-				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav navbar-right custom-menu">
-						<li class="active"><a href="index.html">首页</a></li>
-						<li><a href="#about">关于我们</a></li>
-						<li><a href="#bloghome1">博客</a></li>
-						<li><a href="#bloghome">讨论组</a></li>
-						<li><a href="#meet-team">帖子</a></li>
-						<li><a href="person.html">个人中心</a></li>
-						<li><a href="blog.html">登录</a></li>
-					</ul>
-				</div>
-			</div>
-		</nav>
-
-
+	<div th:replace="fragments/header :: header">
+	</div>
 		<!--博客列表-->
 		<section class="container blog">
 			<div class="row">
@@ -73,30 +39,25 @@
 		            <h2 class="page-header" style="font-size: 40px">
 		                博客列表
 		            </h2>
+					<button class="btn btn-primary" th:onclick="'addBlog()'">发表博客</button>
 		            <!-- 第一条博客列表-->
 		            <div class="row blogu" th:each="blogs : ${blogs}" >
 						<p ></p>
 		                <div class="col-sm-4 col-md-4 " >
 		                    <div class="blog-thumb">
-		                        <a href="single-post.html">
-		                            <!--<img class="img-responsive" th:src="@{/images/blog-photo1.jpg}" alt="photo"/>-->
-									<img class="img-responsive" th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${blogs.blog.blogPic}" />
+		                        <a th:href="@{'/Blogs/getBlogById/'+${blogs.blog.blogId}}">
+									<img class="img-responsive" style="width: 160px;height: 100px" th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${blogs.blog.blogPic}" />
 		                        </a>
 		                    </div>
 		                </div>
 		                <div class="col-sm-8 col-md-8">
 							<h2 class="blog-title">
-								<a th:text="${blogs.blog.blogTitle}"></a>
+								<a th:text="${blogs.blog.blogTitle} " th:href="@{'/Blogs/getBlogById/'+${blogs.blog.blogId}}"></a>
 							</h2>
 							<p><i class="fa fa-calendar-o" th:text="${blogs.blog.blogCreateTime}"></i>
 								<span class="comments-padding"></span>
-								<i class="fa fa-comment"></i> 1000 留言
 							</p>
-							<p th:text="${blogs.blog.blogContent}"></p>
-
-		                    <!--<h2 class="blog-title" th:text="${blog.blogTitle}"></h2>-->
-		                    <!--<p th:text="${blog.blogCreateTime}"></p>-->
-		                    <!--<p th:text="${blog.blogContent}"></p>-->
+							<p th:text="${blogs.blog.blogXx}"></p>
 		                </div><br/><br/><br/><br/>
 		            </div>
 					<hr/>
@@ -134,7 +95,7 @@
 							<hr/>
 							<!--上下滑动标签-->
 							<ul id="tagscloud" style="margin-top: 0px;padding-left: 0px;font-size: 5px" >
-								<a class="tagc1" th:each="label : ${labelsList}" th:text="${label.labelName}" th:href="@{'/getonelabel/'+${label.labelId}}"></a>
+								<a class="tagc1" th:each="label : ${labelsList}" th:text="${label.labelName}" th:href="@{'/labels/getonelabel/'+${label.labelId}}"></a>
 							</ul>
 						</div>
 
@@ -142,27 +103,13 @@
 				</div>
 		    </section>
 
-		<!--底部-->
-		<footer id="footer">
-			<div class="container">
-				<div class="row myfooter">
-					<div class="col-sm-6"><div class="pull-left">
-						Copyright &copy; 2016.太极计算机有限公司 <a href="http://www.taiji.com.cn/" target="_blank" ></a>
-					</div></div>
-					<div class="col-sm-6">
-						<div class="pull-right">风之彩团队小组</div>
-					</div>
-				</div>
-			</div>
-		</footer>
 
-        <!-- jQuery -->
-	<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
-        <!-- Bootstrap Core JavaScript -->
-	<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
-
-	<script type="text/javascript" th:src="@{/layer/layer.js}"></script>
-	<script type="text/javascript" th:src="@{/Reception_js/tagscloud.js}"></script>
-	<script type="text/javascript" th:src="@{/Reception_js/tagscloud.js}" ></script>
+	<div th:replace="fragments/footer :: footer">
+	</div>
+<script>
+	function addBlog() {
+		window.location.href="/addBlog";
+	}
+</script>
     </body>
 </html>
