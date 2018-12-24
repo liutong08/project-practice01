@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link th:href="@{/img/favicon.html}" rel="shortcut icon"/>
+    <title>Taiji-login</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/bootstrap-reset.css}" rel="stylesheet" type="text/css"/>
+    <!--external css-->
+    <link th:href="@{/assets/font-awesome/css/font-awesome.css}" rel="stylesheet" type="text/css"/>
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/style-responsive.css}" rel="stylesheet" type="text/css"/>
+</head>
+  <body class="login-body">
+    <div class="container">
+      <form class="form-signin" th:action="@{/login/mobile}" method="POST">
+        <h2 class="form-signin-heading">手机号登录</h2>
+        <div class="login-wrap">
+            <input type="text" id="mobiles" name="mobile" class="form-control" placeholder="手机号" />
+            <input type="text" name="smsCode" class="form-control" placeholder="请输入验证码" />
+            <br/>
+            <a onclick="sms()">发送验证码</a>
+            <label class="checkbox">
+                <span class="pull-right"><a href="#"> 忘记密码?</a></span>
+            </label>
+            <button class="btn btn-lg btn-login btn-block" type="submit">登录</button>
+            <p>您可以选择手机号或邮箱登录</p>
+            <div class="login-social-link">
+                <a href="/login" class="facebook">
+                    <i class="icon-unlock-alt"></i>
+                    ID
+                </a>
+                <a href="/login-eamil" class="twitter">
+                    <i class="icon-maxcdn"></i>
+                    Email
+                </a>
+            </div>
+            <!--<p th:text="${errormsg}" class="bg-danger" style="color: red"></p>-->
+        </div>
+      </form>
+    </div>
+    <script type="text/javascript" th:src="@{/js/jquery-1.8.3.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+    <script>
+        function sms(){
+            var num = document.getElementById("mobiles").value;
+            var mPattern = /^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\d{8}$/;
+            if (mPattern.test(num)){
+                layer.msg("发送成功！请在60秒内输入验证码...", {time:1000, icon:1, shift:6}, function () {
+                });
+                window.location.href="/validate/code?mobile="+num;
+            }else {
+                layer.msg("发送失败！请输入正确的手机号...", {time:1000, icon:2, shift:6}, function () {
+                });
+            }
+        }
+    </script>
+  </body>
+</html>

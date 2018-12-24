@@ -7,6 +7,10 @@ import cn.com.taiji.service.GroupsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +37,7 @@ public class GroupsServiceImpl implements GroupsService {
     @Transactional()
     @Override
     public List<Groups> findAllGroups() {
-        List<Groups> groupsList = groupsRepository.findAllByGroupStatus();
+        List<Groups> groupsList = groupsRepository.findAll();
         logger.info("---GroupsServiceImpl---" + groupsList);
         return groupsList;
     }
@@ -64,7 +68,12 @@ public class GroupsServiceImpl implements GroupsService {
         return false;
     }
 
-
+    //分页查询所有
+    @Override
+    public Page<Groups> findGroupsNoCriteria(Integer page, Integer size) {
+        Pageable pageable = new PageRequest(page, size, Sort.Direction.ASC, "groupId");
+        return groupsRepository.findAll(pageable);
+    }
 
 
 }

@@ -1,6 +1,6 @@
 package cn.com.taiji;
 
-import cn.com.taiji.service.PermissionService;
+//import cn.com.taiji.service.PermissionService;
 import cn.com.taiji.service.RoleService;
 import cn.com.taiji.service.UserService;
 
@@ -28,8 +28,8 @@ public class ProjectPractice01ApplicationTests {
     private RoleService roleService;
     @Autowired
     private UserService userService;
-    @Autowired
-    private PermissionService permissionService;
+//    @Autowired
+//    private PermissionService permissionService;
 
     @Test
     public void contextLoads() {

@@ -1,17 +1,23 @@
 package cn.com.taiji.controller;
 
+import cn.com.taiji.domain.Blogs;
 import cn.com.taiji.domain.Groups;
 import cn.com.taiji.domain.Labels;
+import cn.com.taiji.domain.UserInfo;
+import cn.com.taiji.dto.BlogUserDto;
+import cn.com.taiji.service.BlogsService;
 import cn.com.taiji.service.LabelsService;
 import cn.com.taiji.util.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.jws.WebParam;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +33,8 @@ public class LabelsController {
 
     @Autowired
     private LabelsService labelsService;
+    @Autowired
+    private BlogsService blogsService;
 
     //新增标签 前台传回label对象 传出Message ajax判断
     @PostMapping("/addLabel")
@@ -84,4 +92,63 @@ public class LabelsController {
 
         return "label-back-show-single";
     }
+
+//    查找标签对应的博客
+    @GetMapping("/getonelabel/{labelId}")
+    public String getOneBlog(@PathVariable Integer labelId,Model model){
+//根据标签查博客
+        Page<Blogs> blogsPage = blogsService.findBlogsCriteria(labelId, 0);
+        //是否有下一页
+        boolean hasNext = blogsPage.hasNext();
+        model.addAttribute("hasNext", hasNext);
+        logger.info("hasNext" + hasNext);
+        //判断是否有上一页
+        boolean hasPrevious = blogsPage.hasPrevious();
+        logger.info("hasPrevious" + hasPrevious);
+        model.addAttribute("hasPrevious", hasPrevious);
+        //总共的页数
+        int totalPages = blogsPage.getTotalPages();//返回分页总数。
+        logger.info("分页总数" + totalPages);
+        model.addAttribute("totalPages", totalPages);
+        //总条数
+        long totalElements = blogsPage.getTotalElements();//返回元素总数。
+        logger.info("总共多少条" + totalElements);
+        model.addAttribute("totalElements", totalElements);
+
+        List<Blogs> blogsList = blogsPage.getContent();//将所有数据返回为List
+        logger.info("当前页的所有数据" + blogsList);
+        //当前的页数号
+        int pageNum = blogsPage.getNumber();
+        model.addAttribute("pageNum", pageNum);
+        logger.info("pageNum" + pageNum);
+        //每页的显示数量
+        int pageSize = blogsPage.getNumberOfElements();
+        logger.info("pageSize" + pageSize);
+
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("groupsPage", blogsPage);
+
+        List<BlogUserDto> blogUserDtoList = new ArrayList<>();
+        for (Blogs blog : blogsList) {
+            UserInfo blogUserInfo = blog.getUserInfo();
+            if (blogUserInfo != null) {
+                BlogUserDto blogUserDto = new BlogUserDto(blog, blogUserInfo);
+                blogUserDtoList.add(blogUserDto);
+            } else {
+                UserInfo userInfo = new UserInfo();
+                BlogUserDto blogUserDto = new BlogUserDto(blog, userInfo);
+                blogUserDtoList.add(blogUserDto);
+            }
+        }
+        model.addAttribute("blogs", blogUserDtoList);
+        //查询所有标签
+        List<Labels> labelsList = labelsService.findAllLabels();
+        model.addAttribute("labelsList", labelsList);
+        // model.addAttribute("blogs",list);
+        //查询所有标签
+        return "blog";
+    }
+
+
+
 }
