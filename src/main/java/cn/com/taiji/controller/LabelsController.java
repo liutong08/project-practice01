@@ -30,7 +30,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/labels")
 public class LabelsController {
-    private Logger logger = LoggerFactory.getLogger(GroupsController.class);
+    private Logger logger = LoggerFactory.getLogger(LabelsController.class);
 
     @Autowired
     private LabelsService labelsService;
