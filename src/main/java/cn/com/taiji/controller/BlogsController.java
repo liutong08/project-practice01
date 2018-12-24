@@ -209,17 +209,17 @@ public class BlogsController {
         }
     }
 
-    @PostMapping("/saveBlog")
-    @ResponseBody
-    public Message saveBlog(Blogs blog) {
-        blog.setBlogCreateTime(new Date());
-        boolean result = blogsService.saveBlog(blog);
-        if (result == true) {
-            return Message.success("保存成功");
-        } else {
-            return Message.success("保存失败");
-        }
-    }
+//    @PostMapping("/saveBlog")
+//    @ResponseBody
+//    public Message saveBlog(Blogs blog) {
+//        blog.setBlogCreateTime(new Date());
+//        boolean result = blogsService.saveBlog(blog);
+//        if (result == true) {
+//            return Message.success("保存成功");
+//        } else {
+//            return Message.success("保存失败");
+//        }
+//    }
 
     @RequestMapping("/updateBlog")
     @ResponseBody
@@ -255,11 +255,12 @@ public class BlogsController {
         if (userId != null) {
             UserInfo userInfo = userService.findByUserId(userId);
             List<Labels> labelsList = new ArrayList<>();
+            List<Blogs> blogsList=new ArrayList<>();
             //判断是否是新的博客
             if (blogs.getBlogId() != null) {
                 return Message.fail("该博客已存在");
             } else {
-                if (file != null || labelId != null) {
+                if (file != null ) {
                     //带文件发表
                     //随机生成文件名
                     String filename1 = UUID.randomUUID().toString().replace("-", "");
@@ -274,23 +275,27 @@ public class BlogsController {
                     blogs.setBlogPic(filename1 + "." + ext);
                     blogs.setBlogStatus("1");
                     blogs.setUserInfo(userInfo);
-                    blogsService.saveBlog(blogs);
                     //简历博客与标签的关系
                     //添加标签
                     Labels label = labelsService.findLabelById(labelId);
                     labelsList.add(label);
                     blogs.setLabels(labelsList);
+                    Blogs blogs1 = blogsService.saveBlog(blogs);
+                    blogsList.add(blogs1);
+                    label.setBlogsList(blogsList);
+
                     return Message.success("发表成功");
                 } else {
                     //不带文件发表
                     blogs.setBlogCreateTime(new Date());
                     blogs.setBlogStatus("1");
                     blogs.setUserInfo(userInfo);
-                    //不带标签
-                    Labels labels = new Labels();
-                    labelsList.add(labels);
+                    Labels label = labelsService.findLabelById(labelId);
+                    labelsList.add(label);
                     blogs.setLabels(labelsList);
-                    blogsService.saveBlog(blogs);
+                    Blogs blogs1 = blogsService.saveBlog(blogs);
+                    blogsList.add(blogs1);
+                    label.setBlogsList(blogsList);
                     return Message.success("发表成功");
                 }
             }

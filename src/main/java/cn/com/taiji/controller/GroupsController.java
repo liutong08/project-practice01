@@ -6,8 +6,10 @@ import cn.com.taiji.domain.Posts;
 import cn.com.taiji.domain.UserInfo;
 import cn.com.taiji.dto.GroupUserDto;
 import cn.com.taiji.service.GroupsService;
+import cn.com.taiji.service.LabelsService;
 import cn.com.taiji.service.UserService;
 import cn.com.taiji.util.Message;
+import lombok.AllArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
@@ -41,6 +44,8 @@ public class GroupsController {
     private GroupsService groupsService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private LabelsService labelsService;
 
     //查询所有的讨论组(分页)
     @GetMapping ("/findAllPages/{num}")
@@ -94,33 +99,7 @@ public class GroupsController {
         return "group-back-list";
 
     }
-//    //查询所有的讨论组
-//    @GetMapping("/findAllGroups")
-//    public String findAllGroups(Model model) {
-//
-//        logger.info("findAllGroups---");
-//
-//        //全部讨论组
-//        List<Groups> groupsList = groupsService.findAllGroups();
-////        model.addAttribute("groupsList",groupsList);
-////        logger.info("groupsList---"+groupsList);
-//
-//        List<GroupUserDto> groupUserDtoList = new ArrayList<>();
-//        for (Groups group : groupsList) {
-//            UserInfo groupUserInfo = group.getUserInfo();
-//            if (groupUserInfo != null) {
-//                GroupUserDto groupUserDto = new GroupUserDto(group, groupUserInfo);
-//                groupUserDtoList.add(groupUserDto);
-//            } else {
-//                UserInfo userInfo = new UserInfo();
-//                userInfo.setUserName("无组长");
-//                GroupUserDto groupUserDto = new GroupUserDto(group, userInfo);
-//                groupUserDtoList.add(groupUserDto);
-//            }
-//        }
-//        model.addAttribute("groupUserDtoList", groupUserDtoList);
-//        return "group-back-list";
-//    }
+
 
     //查询指定讨论组
     @GetMapping("/findOneGroup")
@@ -170,7 +149,7 @@ public class GroupsController {
     //讨论组添加
     @PostMapping("/addGroup")
     @ResponseBody
-    public Message addGroup(Groups groups, MultipartFile file) throws IOException {
+    public Message addGroup(Groups groups,Integer labelId, MultipartFile file) throws IOException {
         logger.info(groups.toString());
 
 
@@ -191,7 +170,17 @@ public class GroupsController {
                 groups.setGroupIco(filename + "." + ext);
                 groups.setGroupCreateTime(new Date());
                 groups.setGroupStatus("1");
-                groupsService.addOrUpdateGroup(groups);
+                //建立讨论组和标签的关系
+                List<Labels> labelsList=new ArrayList<>();
+                Labels label = labelsService.findLabelById(labelId);
+                labelsList.add(label);
+                groups.setLabelsList(labelsList);
+                //建立标签和讨论组的关系
+                Groups groups1 = groupsService.addGroup(groups);
+                List<Groups> groupsList=new ArrayList<>();
+                groupsList.add(groups1);
+                label.setGroupsList(groupsList);
+
                 return Message.success("添加成功");
             } else {
                 groups.setGroupCreateTime(new Date());

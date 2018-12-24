@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 
 public interface BlogsService {
 
-	boolean saveBlog(Blogs blog);
+	Blogs saveBlog(Blogs blog);
 	boolean updateBlog(Blogs blog);
 	List<Blogs> getAllBlog();
 //	List<Blogs> getAllBlogByUserId(Integer UserId);

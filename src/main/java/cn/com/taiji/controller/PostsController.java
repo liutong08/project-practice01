@@ -10,16 +10,21 @@ import cn.com.taiji.service.PostsService;
 import cn.com.taiji.service.RepliesService;
 import cn.com.taiji.service.UserService;
 import cn.com.taiji.util.Message;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @ Author     ：liutong.
@@ -66,25 +71,46 @@ public class PostsController {
         }
     }
 
+    @GetMapping("/gotoAddPost")
+    public String gotoAddPost(@RequestParam Integer groupId,Model model){
+        model.addAttribute("groupId",groupId);
+        return "post-add";
+    }
+
     //添加贴子(发帖) 前台返回post信息，讨论组id，作者id 传出Message ajax判断
     @PostMapping("/addPost")
     @ResponseBody
-    public Message addPost(Posts post, Groups group, UserInfo userInfo) {
+    public Message addPost(Posts post, Integer groupId, Integer userId, MultipartFile file) throws IOException {
         //获取讨论组信息
-        Groups postGroup = groupsService.findGroupById(group.getGroupId());
-        post.setGroups(postGroup);
+        Groups postGroup = groupsService.findGroupById(groupId);
         //获取作者信息
-        UserInfo postUserInfo = userService.findByUserId(userInfo.getUserId());
-        post.setUserInfo(postUserInfo);
-        //设定创建时间为当前时间
-        post.setPostCreateTime(new Date());
-        //新增贴子
-        Posts save = postsService.addPost(post);
-        //判断新增是否成功
-        if (save != null) {
-            return Message.success("新增成功");
+        UserInfo postUserInfo = userService.findByUserId(userId);
+        if (post.getPostId() != null) {
+            return Message.fail("该帖子已存在");
         } else {
-            return Message.fail("新增失败");
+            if (file != null) {
+                //随机生成文件名
+                String filename2 = UUID.randomUUID().toString().replace("-", "");
+                logger.info("filename1====" + filename2);
+                //获取文件的后缀
+                String ext = FilenameUtils.getExtension(file.getOriginalFilename());
+                logger.info("ext====" + ext);
+                //写入文件到指定位置
+
+                file.transferTo(new File(filename2 + "." + ext));
+                post.setPostPic(filename2 + "." + ext);
+                post.setPostCreateTime(new Date());
+                post.setGroups(postGroup);
+                post.setUserInfo(postUserInfo);
+                postsService.addPost(post);
+                return Message.success("发表成功");
+            } else {
+                post.setPostCreateTime(new Date());
+                post.setGroups(postGroup);
+                post.setUserInfo(postUserInfo);
+                postsService.addPost(post);
+                return Message.success("发表成功");
+            }
         }
 
     }

@@ -80,5 +80,11 @@ public class GroupsServiceImpl implements GroupsService {
         return groupsRepository.findAllByGroupStatus();
     }
 
+    @Override
+    public Groups addGroup(Groups groups) {
+
+        return groupsRepository.save(groups);
+    }
+
 
 }

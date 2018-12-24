@@ -33,13 +33,9 @@ public class BlogsServiceImpl implements BlogsService{
 
 	@Override
 	@Transactional
-	public boolean saveBlog(Blogs blog) {
+	public Blogs saveBlog(Blogs blog) {
 		Blogs bo = blogsRepository.save(blog);
-		if(bo != null) {
-			return true;
-		}else {
-			return false;
-		}
+		return bo;
 	}
 
 	@Transactional
