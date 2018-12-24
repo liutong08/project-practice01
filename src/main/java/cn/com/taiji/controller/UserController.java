@@ -1,6 +1,8 @@
-
 package cn.com.taiji.controller;
 
+import cn.com.taiji.domain.Blogs;
+import cn.com.taiji.domain.Groups;
+import cn.com.taiji.domain.Posts;
 import cn.com.taiji.domain.UserInfo;
 import cn.com.taiji.service.UserService;
 import cn.com.taiji.util.Message;
@@ -127,7 +129,7 @@ public class UserController {
             boolean results = userService.insert(userInfo,num);
             if (results == true) {
                 //给用户设置初始角色，2号为普通用户，不是后台管理员
-                userService.saveroles(userInfo.getUserId(),2);
+//                userService.saveroles(userInfo.getUserId(),2);
                 return Message.success("新增成功！");
             } else {
                 return Message.fail("新增失败！");
@@ -143,6 +145,32 @@ public class UserController {
             return Message.success("删除成功！");
         } else {
             return Message.fail("删除失败！");
+        }
+    }
+
+    //前台个人中心 根据个人Id查询个人所有信息
+    //根据个人Id查询相关博客信息以及讨论组信息
+    @GetMapping("/findOneUser/{userId}")
+    public  String findOneUser(@PathVariable Integer userId ,Model model){
+        if (userId == null){
+            return "login";
+        }else {
+            //根据个人Id查询个人所有信息
+            UserInfo user = userService.findByUserId(userId);
+            model.addAttribute("user", user);
+
+            //根据个人Id查询相关博客信息
+            List<Blogs> userBlogsList = user.getBlogsList();
+            model.addAttribute("userBlogsList",userBlogsList);
+
+            //根据个人Id查询讨论组信息
+            List<Groups> userGroupsList = user.getGroupsList();
+            model.addAttribute("userGroupsList",userGroupsList);
+
+            //根据个人Id查询帖子信息(前端个人中心没写因为样式不会弄)
+            List<Posts> userPostsList = user.getPostsList();
+            model.addAttribute("userPostsList",userPostsList);
+            return "person";
         }
     }
 }

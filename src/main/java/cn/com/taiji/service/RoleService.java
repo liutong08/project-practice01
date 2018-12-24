@@ -2,6 +2,8 @@ package cn.com.taiji.service;
 
 import cn.com.taiji.domain.Role;
 
+import java.util.List;
+
 /**
  * @author : wangsuide
  * @version 1.0
@@ -16,4 +18,10 @@ public interface RoleService {
     Role insertrole(Role role);
 
     Integer deleterole(Integer roleId);
+
+    List<Role> findallrole();
+
+    Role findByRoleId(Integer roleId);
+
+    boolean updataRole(Role role);
 }

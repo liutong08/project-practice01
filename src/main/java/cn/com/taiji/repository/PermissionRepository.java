@@ -20,12 +20,22 @@ public interface PermissionRepository extends JpaRepository<Permission,Integer> 
     //给角色增加权限
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO sys_permission_role VALUES(?1, ?2)", nativeQuery = true)
+    @Query(value = "INSERT INTO sys_permissions_roles VALUES(?1, ?2)", nativeQuery = true)
     int savepermission(Integer permissionId, Integer roleId);
+
 
     //给角色删除权限
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM sys_permission_role WHERE permission_id = ?1 and role_id = ?2", nativeQuery = true)
+    @Query(value = "DELETE FROM sys_permissions_roles WHERE permission_id = ?1 and role_id = ?2", nativeQuery = true)
     int deletepermission(Integer permissionId, Integer roleId);
+
+    //新增加权限信息
+    Permission save(Permission permission);
+
+    //查找单个权限信息
+    Permission findByPermissionId(Integer permissionId);
+
+    //删除权限信息
+    Integer deleteByPermissionId(Integer permissionId);
 }

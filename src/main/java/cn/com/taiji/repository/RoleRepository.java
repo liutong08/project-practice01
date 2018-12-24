@@ -3,8 +3,6 @@ package cn.com.taiji.repository;
 import cn.com.taiji.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-
-
 /**
  * @author : wangsuide
  * @version 1.0
@@ -15,8 +13,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface RoleRepository extends JpaRepository<Role,Integer> {
 
-int deleteByRoleId(Integer RoleId);
 
+    int deleteByRoleId(Integer RoleId);
 
+    Role findByRoleId(Integer roleId);
 
 }
