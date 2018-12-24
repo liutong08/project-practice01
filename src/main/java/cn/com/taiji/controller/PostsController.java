@@ -32,7 +32,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/posts")
 public class PostsController {
-    private Logger logger = LoggerFactory.getLogger(GroupsController.class);
+    private Logger logger = LoggerFactory.getLogger(PostsController.class);
 
     @Autowired
     private PostsService postsService;
