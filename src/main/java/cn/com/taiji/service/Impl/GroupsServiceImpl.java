@@ -75,5 +75,10 @@ public class GroupsServiceImpl implements GroupsService {
         return groupsRepository.findAll(pageable);
     }
 
+    @Override
+    public List<Groups> findAllByGroupStatus() {
+        return groupsRepository.findAllByGroupStatus();
+    }
+
 
 }
