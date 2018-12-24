@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>太极</title>
+    <!-- Bootstrap Core CSS -->
+    <link th:href="@{/Reception_css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>
+    <!-- Custom Fonts -->
+    <link th:href="@{/Reception_font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
+    <!-- Custom CSS -->
+    <link th:href="@{/Reception_css/patros.css}" rel="stylesheet" type="text/css"/>
+</head>
+
+<body data-spy="scroll">
+<!-- 顶部 -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html"><img src="images/logo.png" alt="company logo"/></a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right custom-menu">
+                <li><a href="/jump/index">首页</a></li>
+                <li><a href="/jump/blogsFrontIndex">博客</a></li>
+                <li class="active"><a href="/frontGroup/groupsIndex">讨论组</a></li>
+                <li><a href="/jump/personalInfoIndex">个人中心</a></li>
+                <li><a href="/jump/login">登录</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- 个人贴子详情 -->
+<div class="container blog singlepost">
+    <div class="row">
+        <article class="col-md-8">
+            <h1 class="page-header sidebar-title">
+                <span th:text="${postUserGroupDto.posts.postTitle}"></span>
+            </h1>
+            <img th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${postUserGroupDto.posts.postPic}"
+                 class="img-responsive" alt="photo"/>
+            <hr/>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="entry-meta">
+                        <span><i class="fa fa-calendar-o"></i> 创建时间 <span
+                                th:text="${postUserGroupDto.posts.postCreateTime}"></span></span>
+                        <span><i class="fa fa-user"></i> 作者 <span
+                                th:text="${postUserGroupDto.userInfo.userName}"></span></span>
+                        <span><i class="fa fa-group"></i> 讨论组 <span
+                                th:text="${postUserGroupDto.groups.groupName}"></span></span>
+                    </div>
+                </div>
+            </div>
+            <p th:text="${postUserGroupDto.posts.postContent}"></p>
+            <button th:onclick="'toAddReply(2,'+${postUserGroupDto.groups.groupId}+','+${postUserGroupDto.posts.postId}+');'" class="btn btn-primary">回帖</button>
+
+            <div class="comments1">
+                <!--回帖模态框-->
+                <div class="modal fade" id="addRelies" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title">回帖内容</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post">
+                                    <input type="hidden" id="userId" name="userId"/>
+                                    <input type="hidden" id="postId" name="postId" />
+                                    <div class="form-group">
+                                        <textarea class="form-control" id="replyContent" name="replyContent" style="color:black" rows="3" cols="50"></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                <button type="button" class="btn btn-primary" onclick="addReply()">发表</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="media" th:each="ruDto:${replyUserDtoList}">
+                    <a class="pull-left" href="#">
+                        <img class="media-object" th:src="${ruDto.userInfo.userPic}" alt=""/>
+                    </a>
+                    <div class="media-body">
+                        <span class="media-heading" th:text="${ruDto.userInfo.userName}"></span>
+                        <span th:text="${ruDto.replies.replyCreateTime}"></span>
+                        <p th:text="${ruDto.replies.replyContent}"></p>
+                    </div>
+                </div>
+            </div>
+        </article>
+        <aside class="col-md-4 sidebar-padding">
+            <!-- Recent Posts -->
+            <div class="blog-sidebar">
+                <h4 class="sidebar-title"><i class="fa fa-align-left"></i> 最近帖子</h4>
+                <hr style="margin-bottom: 5px;"/>
+
+                <div class="media" th:each="pos:${postsList}">
+                    <a class="pull-left" th:href="'/frontGroup/postSingle?postId='+${pos.postId}">
+                        <img class="img-responsive media-object"
+                             th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${pos.postPic}"
+                             alt="Media Object"/>
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading"><a th:href="'/frontGroup/postSingle?postId='+${pos.postId}"
+                                                     th:text="${pos.postTitle}">关于Spring Boot的那些事</a></h4>
+                        作者：
+                        <small th:text="${pos.userInfo.userName}"></small>
+                        &nbsp;讨论组：
+                        <small th:text="${pos.groups.groupName}"></small>
+                        <!--<p th:text="${pos.postContent}"></p>-->
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<!--底部-->
+<footer id="footer">
+    <div class="container">
+        <div class="row myfooter">
+            <div class="col-sm-6">
+                <div class="pull-left">
+                    Copyright &copy; 2018.太极计算机有限公司 <a href="http://www.taiji.com.cn/" target="_blank"></a>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="pull-right">风之彩团队小组</div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script type="text/javascript" th:src="@{/Reception_js/jquery.js}"></script>
+<!-- Bootstrap Core JavaScript -->
+<script type="text/javascript" th:src="@{/Reception_js/bootstrap.min.js}"></script>
+<!--Jquery Smooth Scrolling-->
+<script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+
+</body>
+<script type="text/javascript">
+    function toAddReply(userId,groupId,postId) {
+        $.ajax({
+            url: "/frontGroup/checkUser",
+            type: "GET",
+            data: {
+                userId: userId,
+                groupId: groupId
+            },
+            success: function (data) {
+                if (data.code == 1) {
+                    $("#addRelies").modal("show");
+                    $("#userId").val(userId);
+                    $("#postId").val(postId);
+                } else {
+                    layer.confirm(data.msg, {icon: 3, title: '提示'}, function () {
+                        addIntoGroup(userId, groupId, postId);
+                    })
+                }
+
+            }
+        });
+    }
+
+    function addIntoGroup(userId, groupId, postId) {
+        $.ajax({
+            url: "/frontGroup/addIntoGroup",
+            type: "POST",
+            data: {
+                userId: userId,
+                groupId: groupId
+            },
+            success: function (data) {
+                if (data.code == 1) {
+                    layer.msg(data.msg, {time: 1000, icon: 1, shift: 0}, function (){
+                        $("#addRelies").modal("show");
+                        $("#userId").val(userId);
+                        $("#postId").val(postId);
+                    })
+                } else {
+                    alert(data.msg);
+                }
+            }
+        });
+    }
+
+    function addReply() {
+        // alert(replyContent);
+        $.ajax({
+            url: "/frontGroup/addReply",
+            type: "POST",
+            data: {
+                userId:  $("#userId").val(),
+                postId: $("#postId").val(),
+                replyContent: $("#replyContent").val()
+            },
+            success: function (data) {
+                if (data.code == 1) {
+                    layer.msg(data.msg, {time:1000, icon:1, shift:0}, function () {
+                        $("#addRelies").modal("hide");
+                        location.href="/frontGroup/postSingle?postId="+data.extend.post.postId;
+                    });
+                } else {
+                    layer.msg(data.msg, {time:1000, icon:1, shift:0}, function () {
+                        window.location.href="/frontGroup/postSingle?postId="+data.extend.post.postId;
+                    });
+                }
+            }
+        });
+    }
+
+</script>
+</html>
