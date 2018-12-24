@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" data-th-fragment="header">
+<head>
+    <meta charset="utf-8"/>
+    <title></title>
+    <!-- Bootstrap Core CSS -->
+
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css" />
+    <!-- Custom Fonts -->
+    <link th:href="@{/Reception_font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
+    <!-- Custom CSS -->
+    <link th:href="@{/Reception_css/patros.css}" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/editor/editormd.css}" type="text/css" href="/editor/editormd.css"/>
+
+    <!-- jQuery -->
+    <script type="text/javascript" th:src="@{/js/jquery.js}" src="/js/jquery.js"></script>
+    <script type="text/javascript" th:src="@{/editor/editormd.js}" src="/editor/editormd.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/Reception_js/tags.js}"></script>
+    <script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+    <script type="text/javascript" th:src="@{/Reception_js/tagscloud.js}"></script>
+    <script type="text/javascript" th:src="@{/Reception_js/tagscloud.js}" ></script>
+
+</head>
+
+<body data-spy="scroll">
+<!-- 头部 -->
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <!--PATROS头部为图片，不是文本-->
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right custom-menu">
+                <li class="active"><a href="/">首页</a></li>
+
+                <li><a href="/Blogs/findAnyBlogs/0">博客</a></li>
+                <li><a href="#bloghome">讨论组</a></li>
+                <li><a href="#meet-team">帖子</a></li>
+                <li><a href="person.html">个人中心</a></li>
+                <li><a href="../blog.html">登录</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
