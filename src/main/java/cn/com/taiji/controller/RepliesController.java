@@ -25,6 +25,7 @@ import java.util.Date;
  * @ Version:     $version
  */
 @Controller
+@RequestMapping("/replies")
 public class RepliesController {
 
     @Autowired
