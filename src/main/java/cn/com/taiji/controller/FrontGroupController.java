@@ -46,9 +46,65 @@ public class FrontGroupController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/groupSingle")
-    public String groupSingle(@RequestParam Integer groupId, Model model) {
-        return "group-front-single";
+    @PostMapping("/exitOut")
+    @ResponseBody
+    public Message exitOut(UserInfo userInfo,Groups groups){
+        if(userInfo.getUserId()!=null){
+            //通过登录用户ID查询用户所有信息
+            UserInfo userInfo1 = userService.findByUserId(userInfo.getUserId());
+            //通过讨论组ID查询讨论组信息
+            Groups group = groupsService.findGroupById(groups.getGroupId());
+            //获取讨论组的用户信息
+            List<UserInfo> userInfoList = group.getUserInfoList();
+            boolean bool=false;
+            if(userInfoList.contains(userInfo1)){
+                userInfoList.remove(userInfo1);
+                groupsService.addOrUpdateGroup(group);
+                return Message.success("有机会再来哦");
+            }else{
+                return Message.fail("您不在该讨论组内");
+            }
+//            for (UserInfo userInfo2 : userInfoList) {
+//                if(userInfo2.getUserId().equals(userInfo1.getUserId())){
+//                    userInfoList.remove(userInfo1);
+//                    bool = groupsService.addOrUpdateGroup(group);
+//                }
+//            }
+//            if(bool) {
+//                    return Message.success("有机会再来哦");
+//            }else {
+//                return Message.fail("您不在该讨论组内");
+//            }
+        }else {
+            return Message.empty("无法获取您的信息，请先登录");
+        }
+    }
+
+    @PostMapping("/joinIn")
+    @ResponseBody
+    public Message joinIn(UserInfo userInfo,Groups groups){
+        if(userInfo.getUserId()!=null){
+            //通过登录用户ID查询用户所有信息
+            UserInfo userInfo1 = userService.findByUserId(userInfo.getUserId());
+            //通过讨论组ID查询讨论组信息
+            Groups group = groupsService.findGroupById(groups.getGroupId());
+            //获取讨论组的用户信息
+            List<UserInfo> userInfoList = group.getUserInfoList();
+            for (UserInfo userInfo2 : userInfoList) {
+                if(userInfo2.getUserId().equals(userInfo1.getUserId())){
+                    return Message.fail("您已在该讨论组内");
+                }
+            }
+            userInfoList.add(userInfo1);
+            boolean b = groupsService.addOrUpdateGroup(group);
+            if (b){
+                return Message.success("欢迎加入");
+            }else{
+                return Message.fail("很遗憾，加入失败");
+            }
+        }else {
+            return Message.empty("无法获取您的信息，请先登录");
+        }
     }
 
     //添加回帖

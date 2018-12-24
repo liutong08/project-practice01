@@ -14,30 +14,7 @@
 </head>
 <body data-spy="scroll">
 <!-- Navigation -->
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <!--PATROS头部为图片，不是文本-->
-            <a class="navbar-brand" href="index.html"><img th:src="@{/images/logo.png}" alt="company logo"/></a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right custom-menu">
-                <li><a href="/jump/index">首页</a></li>
-                <li><a href="/jump/blogsFrontIndex">博客</a></li>
-                <li class="active"><a href="/frontGroup/groupsIndex">讨论组</a></li>
-                <li><a href="/jump/personalInfoIndex">个人中心</a></li>
-                <li><a href="/jump/login">登录</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div th:replace="fragments/header :: header"></div>
 
 <!-- 讨论组 -->
 <section class="container blog">
@@ -60,7 +37,7 @@
                 </div>
                 <div class="col-sm-8 col-md-8">
                     <h2 class="blog-title">
-                        <a th:href="'/frontGroup/groupSingle?groupId='+${guDto.group.groupId}" th:text="${guDto.group.groupName}"></a>
+                        <a th:href="@{'/groups/getGroupsById/'+${guDto.group.groupId}}" th:text="${guDto.group.groupName}"></a>
                     </h2>
                     <p><i class="fa fa-calendar-o" th:text="${guDto.group.groupCreateTime}"></i>
                         <span class="comments-padding"></span>
@@ -135,20 +112,7 @@
     </div>
 </section>
 
-<footer id="footer">
-    <div class="container">
-        <div class="row myfooter">
-            <div class="col-sm-6">
-                <div class="pull-left">
-                    Copyright &copy; 2018.太极计算机有限公司 <a href="http://www.taiji.com.cn/" target="_blank"></a>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="pull-right">风之彩团队小组</div>
-            </div>
-        </div>
-    </div>
-</footer>
+<div th:replace="fragments/footer :: footer"></div>
 
 <!-- jQuery -->
 <script type="text/javascript" th:src="@{/js/jquery.js}"></script>
