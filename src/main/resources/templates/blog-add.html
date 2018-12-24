@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<style>
+
+    input, textarea {
+
+        color: red;
+        background-color: #f4f4f4;
+    }
+</style>
+<body>
+<!--头部-->
+<div th:replace="fragments/header :: header"></div>
+
+<div class="container" STYLE="padding-top: 90px">
+
+    <h3>博客发表</h3>
+    <form class="form-horizontal" enctype="multipart/form-data">
+        <!--标题-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">标题</label>
+            <div class="col-sm-10">
+                <input style="color:red;" type="hidden" id="userId" value="2"/>
+                <input style="color: black"   type="text" class="form-control" id="title"/>
+            </div>
+        </div>
+        <!--描述-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">描述</label>
+            <div class="col-sm-10">
+                <input  style="color: black" type="text" class="form-control" id="description"/>
+            </div>
+        </div>
+        <!--图片-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">图标</label>
+            <div class="col-sm-10">
+                <input style="color: black" type="file" class="form-control" id="file"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">标签</label>
+            <div class="col-sm-10">
+                <select style="color: black" type="text" id="label" class="form-control"></select>
+                <span class="help-block"></span>
+            </div>
+        </div>
+        <!--内容-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">详情</label>
+            <div class="col-sm-10">
+                <textarea style="height: 350px;color: black" class="form-control" id="content"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default" th:onclick="'addBlog()'">发表</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!--尾部-->
+<div th:replace="fragments/footer :: footer">
+</div>
+</body>
+<script type="text/javascript">
+    //初始化
+    $(document).ready(function () {
+      searchLabel();
+    })
+
+    function jump() {
+        window.location.href = "/blogList";
+       // Response.Redirect(');
+        window.event.returnValue=false;
+    }
+
+    function addBlog() {
+        var formData = new FormData();
+        var file = $('#file').get(0).files[0];
+        var title = $("#title").val();
+        var description = $("#description").val();
+        var content = $("#content").val();
+        var userId = $("#userId").val();
+        var labelId=$("#label").val();
+
+        formData.append("file", file);
+        formData.append("blogTitle", title);
+        formData.append("blogXx", description);
+        formData.append("blogContent", content);
+        formData.append("userId", userId);
+        formData.append("labelId", labelId);
+        $.ajax({
+            url: "/Blogs/addBlog",
+            type: "post",
+            async: false,
+            cache: false,
+            contentType: false, //不设置内容类型
+            processData: false, //不处理数据
+            data: formData,
+            success: function (data) {
+                if (data.code == 1) {
+                    layer.msg(data.msg, {time: 1500, icon: 1, shift: 0}, function () {});
+                    jump();
+                } else {
+                    layer.msg(data.msg, {time: 1500, icon: 1, shift: 0}, function () {});
+                    jump();
+                }
+            }
+        });
+    }
+
+    function searchLabel(){
+        var add = document.getElementById("label");
+        var selectStr ='<option value="">全部</option>';
+        $.get("/labels/allLabels",
+            function (data) {
+                for(var temp in data)
+                {
+
+                    selectStr+='<option value="'+data[temp].labelId+'">'+data[temp].labelName+'</option>';
+                }
+                add.innerHTML=selectStr;
+
+            });
+
+    }
+</script>
+</html>
