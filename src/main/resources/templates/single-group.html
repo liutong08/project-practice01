@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>太极</title>
+    <!-- Bootstrap Core CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>
+    <!-- Custom Fonts -->
+    <link th:href="@{/Reception_font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
+    <!-- Custom CSS -->
+    <link th:href="@{/Reception_css/patros.css}" rel="stylesheet"/>
+    <!--标签-->
+</head>
+<body data-spy="scroll">
+<!-- Navigation -->
+<div th:replace="fragments/header :: header"></div>
+<!-- 讨论组 -->
+<section class="container blog">
+    <div class="row">
+        <!-- Blog Column -->
+        <div class="col-md-8">
+            <input type="hidden" id="groupId" th:value="${group.groupId}"/>
+            <h1 class="page-header sidebar-title" th:text="${group.groupName}"></h1>
+            <!-- First Blog Post -->
+            <div class="row blogu" th:each="post:${postsList}">
+                <div class="col-sm-4 col-md-4 ">
+                    <div class="blog-thumb">
+                        <a th:href="'/frontGroup/postSingle?postId='+${post.postId}">
+                            <img class="img-responsive"
+                                 th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${post.postPic}"
+                                 th:alt="${post.postPic}"/>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-8 col-md-8">
+                    <h2 class="blog-title">
+                        <a th:href="'/frontGroup/postSingle?postId='+${post.postId}"
+                           th:text="${post.postTitle}"></a>
+                    </h2>
+                    <p><i class="fa fa-calendar-o" th:text="${post.postCreateTime}"></i>
+                        <span class="comments-padding"></span>
+                        <i class="fa fa fa-user"
+                           th:text="${post.userInfo.userName}"></i>
+                    </p>
+                    <!--<p th:text="${post.}"></p>-->
+                </div>
+            </div>
+            <hr/>
+        </div>
+
+        <!-- Blog Sidebar Column -->
+        <aside class="col-md-4 sidebar-padding">
+
+            <!-- 标签部分 -->
+            <div class="blog-sidebar">
+                <input type="hidden" id="userId" th:value="2"/>
+                <button type="button" class="btn btn-primary" onclick="joinIn()">加入</button>
+                <button type="button" class="btn btn-primary" onclick="exitOut()">退出</button>
+                <!--<button type="button" class="btn btn-primary" onclick="updateLabels()">修改标签</button>-->
+                <button type="button" class="btn btn-primary" onclick="addPost()">发帖</button>
+                <br/><br/>
+                <h4 class="sidebar-title"><i class="fa fa-user"></i> 组长 <small th:text="${groupLader.userName}" ></small></h4>
+                <hr/>
+                <ul style="list-style:none;margin:0;" class="sidebar-list" >
+                    <li style="display:inline;" th:each="user:${userInfoList}">
+                        <div style="width: 35px;height: 50px; display:inline-block;">
+                        <img th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${user.userPic}" style="width: 30px;height:30px;"/>
+                        <p style="display:inline;" th:text="${user.userName}"></p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+</section>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+<!-- jQuery -->
+<script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+<!-- Bootstrap Core JavaScript -->
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/layer/layer.js}"></script>
+
+<!--Jquery Smooth Scrolling-->
+<script>
+    function addPost() {
+        var userid=$("#userId").val();
+        var groupid=$("#groupId").val();
+            $.ajax({
+                url: "/frontGroup/checkUser",
+                type: "GET",
+                data: {
+                    userId: userid,
+                    groupId: groupid
+                },
+                success: function (data) {
+                    if (data.code == 1) {
+                        window.location.href="/posts/gotoAddPost?groupId="+groupid;
+                    } else if(data.code==0){
+                        layer.confirm(data.msg, {icon: 3, title: '提示'}, function () {
+                            window.location.href="/frontGroup/groupsIndex";
+                        })
+                    }else {
+                        layer.confirm(data.msg, {icon: 3, title: '提示'}, function () {
+                            addIntoGroup(userid, groupid);
+                        })
+                    }
+
+                }
+            });
+    }
+    function addIntoGroup(userId, groupId) {
+        $.ajax({
+            url: "/frontGroup/addIntoGroup",
+            type: "POST",
+            data: {
+                userId: userId,
+                groupId: groupId
+            },
+            success: function (data) {
+                if (data.code == 1) {
+                    layer.msg(data.msg, {time: 1000, icon: 1, shift: 0}, function (){
+                        window.location.href="/posts/gotoAddPost?groupId="+groupId;
+                    })
+                } else {
+                    layer.msg(data.msg, {time: 1000, icon: 1, shift: 0}, function (){
+                        location.reload();
+                    })
+                }
+            }
+        });
+    }
+    function joinIn(){
+        $.ajax({
+            url: "/frontGroup/joinIn",
+            type: "POST",
+            data: {
+                userId: $("#userId").val(),
+                groupId: $("#groupId").val()
+            },
+            success: function (data) {
+                if (data.code == 1) {
+                    layer.msg(data.msg, {time: 1000, icon: 1, shift: 0}, function (){
+                        location.reload();
+                    })
+                } else if(data.code==0){
+                    layer.confirm(data.msg, {icon: 3, title: '提示'}, function () {
+                        window.location.href="/frontGroup/groupsIndex";
+                    })
+                }else{
+                    layer.msg(data.msg, {time:1000, icon:1, shift:0}, function () {
+                        location.reload();
+                    });
+                }
+            }
+        });
+    }
+    function exitOut(){
+        $.ajax({
+            url: "/frontGroup/exitOut",
+            type: "POST",
+            data: {
+                userId: $("#userId").val(),
+                groupId: $("#groupId").val()
+            },
+            success: function (data) {
+                if (data.code == 1) {
+                    layer.msg(data.msg, {time: 1000, icon: 1, shift: 0}, function (){
+                        location.reload();
+                    })
+                } else if(data.code==0){
+                    layer.confirm(data.msg, {icon: 3, title: '提示'}, function () {
+                        window.location.href="/frontGroup/groupsIndex";
+                    })
+                }else{
+                    layer.msg(data.msg, {time:1000, icon:1, shift:0}, function () {
+                        location.reload();
+                    });
+                }
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+        $('.custom-menu a[href^="#"], .intro-scroller .inner-link').on('click', function (e) {
+            e.preventDefault();
+
+            var target = this.hash;
+            var $target = $(target);
+
+            $('html, body').stop().animate({
+                'scrollTop': $target.offset().top
+            }, 900, 'swing', function () {
+                window.location.hash = target;
+            });
+        });
+
+        $('a.page-scroll').bind('click', function (event) {
+            var $anchor = $(this);
+            $('html, body').stop().animate({
+                scrollTop: $($anchor.attr('href')).offset().top
+            }, 1500, 'easeInOutExpo');
+            event.preventDefault();
+        });
+
+        $(".nav a").on("click", function () {
+            $(".nav").find(".active").removeClass("active");
+            $(this).parent().addClass("active");
+        });
+
+        $('body').append('<div id="toTop" class="btn btn-primary color1"><span class="glyphicon glyphicon-chevron-up"></span></div>');
+        $(window).scroll(function () {
+            if ($(this).scrollTop() != 0) {
+                $('#toTop').fadeIn();
+            } else {
+                $('#toTop').fadeOut();
+            }
+        });
+        $('#toTop').click(function () {
+            $("html, body").animate({scrollTop: 0}, 700);
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>
