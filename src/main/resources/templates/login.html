@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link th:href="@{/img/favicon.html}" rel="shortcut icon"/>
+    <title>Taiji-login</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/bootstrap-reset.css}" rel="stylesheet" type="text/css"/>
+    <!--external css-->
+    <link th:href="@{/assets/font-awesome/css/font-awesome.css}" rel="stylesheet" type="text/css"/>
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/style.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/style-responsive.css}" rel="stylesheet" type="text/css"/>
+</head>
+  <body class="login-body">
+    <div class="container">
+      <form class="form-signin" th:action="@{/login}" method="POST">
+        <h2 class="form-signin-heading">登录</h2>
+        <div class="login-wrap">
+            <input type="text" id="username" name="username" class="form-control" placeholder="账号" />
+            <input type="password" id="password" name="password" class="form-control" placeholder="密码" />
+            <label class="checkbox">
+                <span class="pull-right"><a href="#"> 忘记密码?</a></span>
+            </label>
+            <button class="btn btn-lg btn-login btn-block" type="submit">登录</button>
+            <p>您可以选择手机号或邮箱登录</p>
+            <div class="login-social-link">
+                <a href="/login-phone" class="facebook">
+                    <i class="icon-tablet"></i>
+                    Phone
+                </a>
+                <a href="/login-eamil" class="twitter">
+                    <i class="icon-maxcdn"></i>
+                    Email
+                </a>
+            </div>
+            <p th:text="${errormsg}" class="bg-danger" style="color: red"></p>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
