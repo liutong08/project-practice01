@@ -13,30 +13,7 @@
 </head>
 
 <body data-spy="scroll">
-<!-- 顶部 -->
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="index.html"><img src="images/logo.png" alt="company logo"/></a>
-        </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right custom-menu">
-                <li><a href="/jump/index">首页</a></li>
-                <li><a href="/jump/blogsFrontIndex">博客</a></li>
-                <li class="active"><a href="/frontGroup/groupsIndex">讨论组</a></li>
-                <li><a href="/jump/personalInfoIndex">个人中心</a></li>
-                <li><a href="/jump/login">登录</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div th:replace="fragments/header :: header"></div>
 
 <!-- 个人贴子详情 -->
 <div class="container blog singlepost">
@@ -130,20 +107,7 @@
 </div>
 
 <!--底部-->
-<footer id="footer">
-    <div class="container">
-        <div class="row myfooter">
-            <div class="col-sm-6">
-                <div class="pull-left">
-                    Copyright &copy; 2018.太极计算机有限公司 <a href="http://www.taiji.com.cn/" target="_blank"></a>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="pull-right">风之彩团队小组</div>
-            </div>
-        </div>
-    </div>
-</footer>
+<div th:replace="fragments/footer :: footer"></div>
 
 <!-- jQuery -->
 <script type="text/javascript" th:src="@{/Reception_js/jquery.js}"></script>
@@ -197,7 +161,11 @@
                         $("#postId").val(postId);
                     })
                 } else {
-                    alert(data.msg);
+                    layer.msg(data.msg, {time: 1000, icon: 1, shift: 0}, function (){
+                        $("#addRelies").modal("show");
+                        $("#userId").val(userId);
+                        $("#postId").val(postId);
+                    })
                 }
             }
         });
