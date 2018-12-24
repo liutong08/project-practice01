@@ -28,6 +28,7 @@ import java.util.List;
  * @ Version:     $version
  */
 @Controller
+@RequestMapping("/labels")
 public class LabelsController {
     private Logger logger = LoggerFactory.getLogger(GroupsController.class);
 
@@ -72,6 +73,32 @@ public class LabelsController {
         logger.info("labelsList---" + labelsList);
 
         return "label-back-list";
+    }
+
+    //通过标签的ID查询标签
+    @GetMapping("/findById")
+    @ResponseBody
+    public Message findById(Integer id) {
+        Labels label = labelsService.findLabelById(id);
+        return Message.success("成功").add("label",label);
+    }
+
+    //修改讨论组信息
+    @PostMapping("/updateLabelInfo")
+    @ResponseBody
+    public Message updateLabelInfo(Labels labels) {
+
+        logger.info("labelId==" + Integer.toString(labels.getLabelId()) + "----");
+        //判断前台传入的groupId是否为空，不为空就调service修改
+        if (labels.getLabelId() != null) {
+            Labels label = labelsService.findLabelById(labels.getLabelId());
+            label.setLabelName(labels.getLabelName());
+            label.setLabelDescription(labels.getLabelDescription());
+            labelsService.addLabel(label);
+            return Message.success("修改成功");
+        } else {
+            return Message.fail("修改失败");
+        }
     }
 
     //通过LabelId查询标签信息，讨论组信息 前台传回labelId 返回 指定标签 页面 使用thymeleaf显示
