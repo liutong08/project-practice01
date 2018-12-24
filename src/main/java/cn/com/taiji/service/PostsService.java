@@ -20,4 +20,5 @@ public interface PostsService {
     public int deletePostByPostId(Integer id);
     public List<Posts> findAllPosts();
     public void deletePostsList(List<Posts> postsList);
+    List<Posts> findPostsByUserId(Integer id);
 }

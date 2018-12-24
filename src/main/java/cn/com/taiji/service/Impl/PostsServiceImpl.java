@@ -1,7 +1,9 @@
 package cn.com.taiji.service.Impl;
 
 import cn.com.taiji.domain.Posts;
+import cn.com.taiji.domain.UserInfo;
 import cn.com.taiji.repository.PostsRepository;
+import cn.com.taiji.repository.UserRepository;
 import cn.com.taiji.service.PostsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ import java.util.List;
 public class PostsServiceImpl implements PostsService {
     @Autowired
     private PostsRepository postsRepository;
+    @Autowired
+    private UserRepository userRepository;
 
 
     //查询贴子的全部信息以及发帖人信息，回帖信息，回帖人信息
@@ -65,5 +69,12 @@ public class PostsServiceImpl implements PostsService {
     @Override
     public void deletePostsList(List<Posts> postsList) {
         postsRepository.delete(postsList);
+    }
+
+    @Override
+    public List<Posts> findPostsByUserId(Integer id) {
+        UserInfo userInfo = userRepository.findByUserId(id);
+        List<Posts> postsList = userInfo.getPostsList();
+        return postsList;
     }
 }
