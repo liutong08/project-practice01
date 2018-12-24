@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="ATIS"/>
+
+    <title>讨论组主题</title>
+
+
+</head>
+
+<body data-spy="scroll">
+<!-- 头部 -->
+<div th:replace="fragments/header :: header"></div>
+
+<!-- 讨论组部分 -->
+<div class="container  blog singlepost">
+    <div class="row ">
+        <p style="size: 30px">讨论组名:&nbsp;&nbsp;<i style="color: red;size:20px" class="page-header sidebar-title"
+                                                  th:text="${group.groupName}"></i></p>
+        <article class="col-md-2" th:each="post:${postsList}">
+            <img style="height: 40px;width: 60px"
+                 th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${post.postPic}"
+                 class="img-responsive" alt="photo"/>
+            <a th:href="'/frontGroup/postSingle?postId='+${post.postId}"><p style="size: 12px" th:text="${post.postTitle}"></p></a>
+
+        </article>
+
+        <!-- 右侧  讨论组成员 -->
+        <aside class="col-md-2 sidebar-padding">
+            <div class="blog-sidebar" style="width: 200px">
+
+                <img style="width: 80px;height: 50px "
+                     th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${groupLader.userPic}"/>
+                <p>组长:&nbsp;&nbsp; <i style="color: red;size: 10px" th:text="${groupLader.userName}"></i></p>
+                <h4 class="sidebar-title"><i class="fa fa-align-left"></i> 组内成员</h4>
+                <hr style="margin-bottom: 5px;"/>
+
+                <div class="media" th:each="user:${userInfoList}">
+                    <img style="width: 60px;height: 50px" class="img-responsive media-object"
+                         th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${user.userPic}"
+                         alt="Media Object"/>
+                    <div class="media-body">
+                        <h4 class="media-heading"><i th:text="${user.userName}"></i></h4>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<!--底部-->
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

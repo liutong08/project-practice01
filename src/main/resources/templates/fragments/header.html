@@ -38,16 +38,16 @@
                 <span class="icon-bar"></span>
             </button>
             <!--PATROS头部为图片，不是文本-->
+            <a class="navbar-brand" href="/"><img th:src="@{/images/logo.png}" alt="company logo"/></a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right custom-menu">
-                <li class="active"><a href="/">首页</a></li>
+                <li class="active"><a th:href="@{/}">首页</a></li>
 
-                <li><a href="/Blogs/findAnyBlogs/0">博客</a></li>
-                <li><a href="#bloghome">讨论组</a></li>
-                <li><a href="#meet-team">帖子</a></li>
-                <li><a href="person.html">个人中心</a></li>
-                <li><a href="../blog.html">登录</a></li>
+                <li><a th:href="@{/Blogs/findAnyBlogs/0}">博客</a></li>
+                <li><a th:href="@{/frontGroup/groupsIndex}">讨论组</a></li>
+                <li><a th:href="@{/frontGroup/groupsIndex}">个人中心</a></li>
+                <li><a th:href="@{/frontGroup/groupsIndex}">登录</a></li>
             </ul>
         </div>
     </div>

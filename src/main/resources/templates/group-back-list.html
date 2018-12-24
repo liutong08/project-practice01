@@ -157,6 +157,10 @@
                         <input type="file" id="addfile" name="file"/>
                     </div>
                     <div class="form-group">
+                        <label class=" control-label">标签</label>
+                        <select style="color: black" type="text" id="label" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
                         <label class="control-label">组名:</label>
                         <input type="text" class="form-control" id="addName" name="addName"/>
                     </div>
@@ -261,6 +265,27 @@
 </body>
 
 <script type="text/javascript">
+
+    //初始化
+    $(document).ready(function () {
+        searchLabel();
+    })
+
+    function searchLabel(){
+        var add = document.getElementById("label");
+        var selectStr="";
+        $.get("/labels/allLabels",
+            function (data) {
+                for(var temp in data)
+                {
+
+                    selectStr+='<option value="'+data[temp].labelId+'">'+data[temp].labelName+'</option>';
+                }
+                add.innerHTML=selectStr;
+
+            });
+
+    }
     function showAdd() {
         $("#addGroup").modal("show");
     }
@@ -341,12 +366,13 @@
         var file = $('#addfile').get(0).files[0];
         var groupName = $("#addName").val();
         var groupDescription = $("#addDescription").val();
+        var labelId=$("#label").val();
 
 
         formData.append("file", file);
         formData.append("groupName", groupName);
         formData.append("groupDescription", groupDescription);
-
+        formData.append("labelId",labelId );
         $.ajax({
             url: "/groups/addGroup",
             type: "post",
@@ -358,16 +384,11 @@
             success: function (data) {
                 if (data.code == 1) {
                     layer.msg(data.msg, {time: 1500, icon: 1, shift: 6}, function () {
-                        //$("#addGroup").modal("hide");
                         location.reload();
                     });
                 }
             }
         })
-    }
-
-    function iconUploda() {
-        $.ajax({})
     }
 
 
@@ -421,22 +442,6 @@
         })
 
     });
-
-    // $(function() {
-    //     $("#pagination3").pagination({
-    //         currentPage: 4,
-    //         totalPage: 16,
-    //         isShow: true,
-    //         count: 7,
-    //         homePageText: "首页",
-    //         endPageText: "尾页",
-    //         prevPageText: "上一页",
-    //         nextPageText: "下一页",
-    //         callback: function(current) {
-    //             $("#current3").text(current)
-    //         }
-    //     });
-    // });
 </script>
 
 </html>

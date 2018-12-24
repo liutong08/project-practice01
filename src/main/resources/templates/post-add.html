@@ -6,11 +6,6 @@
 </head>
 <style>
 
-    input, textarea {
-
-        color: red;
-        background-color: #f4f4f4;
-    }
 </style>
 <body>
 <!--头部-->
@@ -25,14 +20,9 @@
             <label class="col-sm-2 control-label">标题</label>
             <div class="col-sm-10">
                 <input style="color:red;" type="hidden" id="userId" value="2"/>
+                <input style="color:red;" type="hidden" id="groupId" th:value="${groupId}"/>
+
                 <input style="color: black"   type="text" class="form-control" id="title"/>
-            </div>
-        </div>
-        <!--描述-->
-        <div class="form-group">
-            <label class="col-sm-2 control-label">描述</label>
-            <div class="col-sm-10">
-                <input  style="color: black" type="text" class="form-control" id="description"/>
             </div>
         </div>
         <!--图片-->
@@ -42,13 +32,7 @@
                 <input style="color: black" type="file" class="form-control" id="file"/>
             </div>
         </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">标签</label>
-            <div class="col-sm-10">
-                <select style="color: black" type="text" id="label" class="form-control"></select>
-                <span class="help-block"></span>
-            </div>
-        </div>
+
         <!--内容-->
         <div class="form-group">
             <label class="col-sm-2 control-label">详情</label>
@@ -58,7 +42,7 @@
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default" th:onclick="'addBlog()'">发表</button>
+                <button type="submit" class="btn btn-default" th:onclick="'addPost()'">发表</button>
             </div>
         </div>
     </form>
@@ -68,13 +52,10 @@
 </div>
 </body>
 <script type="text/javascript">
-    //初始化
-    $(document).ready(function () {
-      searchLabel();
-    })
+
 
     function jump() {
-        window.location.href = "/blogList";
+        window.location.href = "/groups/getGroupsById/"+$("#groupId").val();
        // Response.Redirect(');
         window.event.returnValue=false;
     }
@@ -83,19 +64,17 @@
         var formData = new FormData();
         var file = $('#file').get(0).files[0];
         var title = $("#title").val();
-        var description = $("#description").val();
         var content = $("#content").val();
         var userId = $("#userId").val();
-        var labelId=$("#label").val();
+        var labelId=$("#groupId").val();
 
         formData.append("file", file);
         formData.append("blogTitle", title);
-        formData.append("blogXx", description);
         formData.append("blogContent", content);
         formData.append("userId", userId);
         formData.append("labelId", labelId);
         $.ajax({
-            url: "/Blogs/addBlog",
+            url: "/posts/addPost",
             type: "post",
             async: false,
             cache: false,
@@ -114,20 +93,5 @@
         });
     }
 
-    function searchLabel(){
-        var add = document.getElementById("label");
-        var selectStr="";
-        $.get("/labels/allLabels",
-            function (data) {
-                for(var temp in data)
-                {
-
-                     selectStr+='<option value="'+data[temp].labelId+'">'+data[temp].labelName+'</option>';
-                }
-                add.innerHTML=selectStr;
-
-            });
-
-    }
 </script>
 </html>
