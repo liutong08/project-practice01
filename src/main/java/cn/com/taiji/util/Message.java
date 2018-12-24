@@ -33,6 +33,14 @@ public class Message {
         return result;
     }
 
+    //定义的判空方法
+    public static Message empty(String msg){
+        Message result = new Message();
+        result.setCode(0);
+        result.setMsg(msg);
+        return result;
+    }
+
     //可以添加自定义数据，返回给浏览器
     public Message add(String key,Object value){
         this.getExtend().put(key,value);

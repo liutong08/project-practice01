@@ -61,7 +61,7 @@
                 </div>
             </div>
             <p th:text="${postUserGroupDto.posts.postContent}"></p>
-            <button th:onclick="'toAddReply(2,'+${postUserGroupDto.groups.groupId}+','+${postUserGroupDto.posts.postId}+');'" class="btn btn-primary">回帖</button>
+            <button th:onclick="'toAddReply(null,'+${postUserGroupDto.groups.groupId}+','+${postUserGroupDto.posts.postId}+');'" class="btn btn-primary">回帖</button>
 
             <div class="comments1">
                 <!--回帖模态框-->
@@ -167,7 +167,11 @@
                     $("#addRelies").modal("show");
                     $("#userId").val(userId);
                     $("#postId").val(postId);
-                } else {
+                } else if(data.code==0){
+                    layer.confirm(data.msg, {icon: 3, title: '提示'}, function () {
+                        window.location.href="/frontGroup/groupsIndex";
+                    })
+                }else {
                     layer.confirm(data.msg, {icon: 3, title: '提示'}, function () {
                         addIntoGroup(userId, groupId, postId);
                     })
