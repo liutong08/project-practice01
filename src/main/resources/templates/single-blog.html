@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="ATIS"/>
+
+    <title>博客主题</title>
+ <!--   &lt;!&ndash; Bootstrap Core CSS &ndash;&gt;
+    <link th:href="@{/Reception_css/bootstrap.min.css}" rel="stylesheet"/>
+    &lt;!&ndash; Custom Fonts &ndash;&gt;
+    <link th:href="@{/Reception_font-awesome/css/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
+    &lt;!&ndash; Custom CSS &ndash;&gt;
+    <link rel="stylesheet" th:href="@{/Reception_css/patros.css}"/>-->
+    <!--标签-->
+    <style type="text/css">
+
+        /*上下滚动标签*/
+        #tagscloud {
+            font-family: "微软雅黑", Arial, sans-serif;
+        }
+
+        #main {
+            border: none;
+            background: none;
+        }
+
+        #tagscloud, ul, li, h1, h2, h3, p, form {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #fbfbfb;
+            color: #444;
+            font-size: 14px;
+        }
+
+        a {
+            color: #444;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: red;
+        }
+
+        /* tagscloud */
+        #tagscloud {
+            width: 250px;
+            height: 260px;
+            position: relative;
+            font-size: 12px;
+            color: #333;
+            margin: 20px auto 0;
+            text-align: center;
+        }
+
+        #tagscloud a {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            color: #333;
+            font-family: Arial;
+            text-decoration: none;
+            margin: 0 10px 15px 0;
+            line-height: 18px;
+            text-align: center;
+            font-size: 12px;
+            padding: 1px 5px;
+            display: inline-block;
+            border-radius: 3px;
+        }
+
+        #tagscloud a.tagc1 {
+            background: #666;
+            color: #fff;
+        }
+
+        #tagscloud a.tagc2 {
+            background: #F16E50;
+            color: #fff;
+        }
+
+        #tagscloud a.tagc5 {
+            background: #006633;
+            color: #fff;
+        }
+
+        #tagscloud a:hover {
+            color: #fff;
+            background: #0099ff;
+        }
+    </style>
+</head>
+
+<body data-spy="scroll">
+<!-- 头部 -->
+<div th:replace="fragments/header :: header"></div>
+<!--<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right custom-menu">
+                <li class="active"><a href="/">首页</a></li>
+                <li><a href="/Blogs/findAnyBlogs/0">博客</a></li>
+                <li><a href="#bloghome">讨论组</a></li>
+                <li><a href="#meet-team">帖子</a></li>
+                <li><a href="person.html">个人中心</a></li>
+                <li><a href="#">登录</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>-->
+
+<!-- 博客列表部分 -->
+<div class="container blog singlepost">
+    <div class="row">
+        <article class="col-md-8">
+            <h1 class="page-header sidebar-title" th:text="${blog.blogTitle}"></h1>
+            <img style="width: 700px" th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${blog.blogPic}"
+                 class="img-responsive" alt="photo"/>
+            <hr/>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="entry-meta">
+                        <span><i class="fa fa-calendar-o" th:text="${blog.blogCreateTime}"></i> </span>
+                        <span><i class="fa fa-user"></i> 发表者 <b th:text="${blogUserInfo.userName}"></b></span>
+                        <span th:each="labels:${blogLabels}"> <i class="fa fa-tag"
+                                                                 th:text="${labels.labelName}">&nbsp;</i></span>
+                    </div>
+                </div>
+            </div>
+            <h4>博客详情</h4>
+            <blockquote>
+                <textarea style="width:700px;height: 250px" th:text="${blog.blogContent}"></textarea>
+            </blockquote>
+            <!--<div id="content1" class="mdl-cell mdl-card mdl-cell&#45;&#45;12-col mdl-shadow&#45;&#45;2dp content editormd-preview-theme-dark">-->
+                <!--<textarea style="display:none;" name="editormd-markdown-doc" th:text="${blog.blogContent}"></textarea>-->
+            <!--</div>-->
+
+            <!-- Blog Comments -->
+            <div class="comments1">
+                <div class="well">
+                    <h4>留下评论:</h4>
+                    <form method="post">
+                        <div class="form-group">
+                            <!--<input type="hidden" id="loginUserId" th:value="${sessionScope.loginUser.userId}"/>-->
+                            <input type="hidden" id="blogId" th:value="${blog.blogId}"/>
+                            <textarea style="color: red" id="content" class="form-control" rows="3" ></textarea>
+                        </div>
+                    </form>
+                    <button class="btn btn-primary btn-xs" th:onclick="'save()'">提交
+                    </button>
+                </div>
+                <hr/>
+                <div class="media" th:each="userAndComments:${userCommentsDtoList}">
+                    <a class="pull-left" href="#">
+                        <img class="media-object"
+                             th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${userAndComments.userInfo.userPic}"
+                             alt=""/>
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading">用户名:
+                            <small><i th:text="${userAndComments.userInfo.userName}"></i>&nbsp; &nbsp;评论时间:<b
+                                    th:text="${userAndComments.comments.commentCreateTime}" style="color: red"></b>
+                            </small>
+                        </h4>
+                        <b th:text="${userAndComments.comments.commentContent}"></b>
+                    </div>
+                </div>
+            </div>
+        </article>
+        <!-- 右侧部分 -->
+        <aside class="col-md-4 sidebar-padding">
+
+            <!-- 最近博客 -->
+            <div class="blog-sidebar">
+                <h4 class="sidebar-title"><i class="fa fa-align-left"></i> 最近博客</h4>
+                <hr style="margin-bottom: 5px;"/>
+
+                <div class="media" th:each="blog:${blogsList}">
+                    <a class="pull-left" href="#">
+                        <img class="img-responsive media-object"
+                             th:src="${#httpServletRequest.getScheme()+'://'+#httpServletRequest.getServerName()+':'+#httpServletRequest.getServerPort()}+'/'+${blog.blogPic}"
+                             alt="Media Object"/>
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading"><a th:href="@{'/Blogs/getBlogById/'+${blog.blogId}}"><i
+                                th:text="${blog.blogTitle}"></i></a></h4>
+                        <p th:text="${blog.blogXx}"></p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<!--底部-->
+
+
+
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+<script>
+
+
+        $(function(){
+            editormd.markdownToHTML("content1")
+        });
+
+
+    function save() {
+        layer.confirm("确认发表该评论吗？", {icon: 3, title: '提示'}, function () {
+            $.ajax({
+                url: "/addComments",
+                type: "post",
+                data: {
+                    blogId: $("#blogId").val(),
+                    //userId: $("#loginUserId").val(),
+                    commentsContent: $("#content").val(),
+                },
+                success: function (data) {
+                    if (data.code == 1) {
+                        layer.msg(data.msg, {time: 1500, icon: 1, shift: 0}, function () {
+                            location.reload();
+                        });
+                    } else {
+                        layer.msg(data.msg, {time: 1500, icon: 1, shift: 0}, function () {
+                            location.reload();
+                        });
+                    }
+
+                }
+            });
+        })
+    }
+</script>
+</html>
