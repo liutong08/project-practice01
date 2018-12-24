@@ -74,6 +74,17 @@ public class LabelsController {
 
         return "label-back-list";
     }
+    @GetMapping("/allLabels")
+    @ResponseBody
+    public List<Labels>  allLabels(Model model) {
+
+
+        //查询所有标签
+        List<Labels> labels = labelsService.findAllLabels();
+        logger.info("labels---" + labels);
+
+        return labels;
+    }
 
     //通过标签的ID查询标签
     @GetMapping("/findById")

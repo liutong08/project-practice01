@@ -18,7 +18,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.websocket.server.PathParam;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -287,6 +286,32 @@ public class GroupsController {
             return Message.fail("操作失败");
         }
 
+    }
+
+    //前台查询单个讨论组  郑伟
+    @RequestMapping("/getGroupsById/{groupsId}")
+    public String getGroupsById(@PathVariable Integer groupsId,Model model){
+        Groups group = groupsService.findGroupById(groupsId);
+        //讨论组组长
+        UserInfo groupLader = group.getUserInfo();
+        if(groupLader!=null){
+            model.addAttribute("groupLader",groupLader);
+        }else {
+            //如果没有组长就给个假数据
+            UserInfo userInfo=new UserInfo();
+            userInfo.setUserName("无组长");
+            userInfo.setUserPic("001.png");
+            model.addAttribute("groupLader",userInfo);
+        }
+
+        model.addAttribute("group",group);
+        //查询讨论组中的成员
+        List<UserInfo> userInfoList = group.getUserInfoList();
+        model.addAttribute("userInfoList",userInfoList);
+        //查询讨论组中的帖子
+        List<Posts> postsList = group.getPostsList();
+        model.addAttribute("postsList",postsList);
+        return "single-group";
     }
 
 

@@ -1,15 +1,21 @@
 package cn.com.taiji.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import cn.com.taiji.domain.*;
 import cn.com.taiji.dto.BlogUserDto;
 import cn.com.taiji.dto.GroupUserDto;
+import cn.com.taiji.dto.UserCommentsDto;
 import cn.com.taiji.service.BlogsService;
 import cn.com.taiji.service.CommentsService;
 import cn.com.taiji.service.LabelsService;
+import cn.com.taiji.service.UserService;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,40 +24,59 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import cn.com.taiji.util.Message;
+import org.springframework.web.multipart.MultipartFile;
+
+/**
+ * @user
+ */
 
 @Controller
 @RequestMapping("/Blogs")
 public class BlogsController {
 
-    private Logger logger = LoggerFactory.getLogger(GroupsController.class);
+    private Logger logger = LoggerFactory.getLogger(BlogsController.class);
 
     @Autowired
     private BlogsService blogsService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private LabelsService labelsService;
+
 
     @Autowired
     private CommentsService commentsService;
 
-    @Autowired
-    private LabelsService labelsService;
 
-//    @RequestMapping("/getAllBlog")
-//    public String getAllBlog(Model model) {
-// 		List<Blogs> listBlogs = blogsService.getAllBlog();
-//
-//			model.addAttribute("listBlogs", listBlogs);
-//
-//		return "blog-back-list";
-//	}
-//	@RequestMapping(value = "/findStatusBlogs")
-//
-//	public String findStatusBlogs(Model model) {
-//
-//		List<Blogs> listBlogs = blogsService.findByBlogStatus("1");
-//
-//			model.addAttribute("listBlogs",listBlogs);
-//
-//			return "blog-back-list";
-//		}
+    @GetMapping("/getBlogById/{blogId}")
+    //@ResponseBody
+    public String getBlogById(@PathVariable Integer blogId, Model model) {
+        //单条博客的内容
+        Blogs blog = blogsService.getBlogByBlogId(blogId);
+        model.addAttribute("blog", blog);
+        //根据博客查询用户信息
+        UserInfo blogUserInfo = blog.getUserInfo();
+        model.addAttribute("blogUserInfo", blogUserInfo);
+        //根据博客查出标签
+        List<Labels> blogLabels = blog.getLabels();
+        model.addAttribute("blogLabels", blogLabels);
+        //查询当前博客用户的其他博客
+        List<Blogs> blogsList = blogUserInfo.getBlogsList();
+        model.addAttribute("blogsList", blogsList);
+        //查询当前博客的所有评论
+        List<Comments> blogCommentsList = blog.getCommentsList();
+        //查询发表评论的用户
+        List<UserCommentsDto> userCommentsDtoList = new ArrayList<>();
+        for (Comments comments : blogCommentsList) {
+            UserInfo commentsUserInfo = comments.getUserInfo();
+            UserCommentsDto userCommentsDto = new UserCommentsDto(commentsUserInfo, comments);
+            userCommentsDtoList.add(userCommentsDto);
+            model.addAttribute("userCommentsDtoList", userCommentsDtoList);
+        }
+
+        return "single-blog";
+    }
+
 
     //	根据ID查询博客
     @GetMapping("getBlogByBlogId")
@@ -64,11 +89,11 @@ public class BlogsController {
         return blogUserDto;
     }
 
-    //查询所有的博客(分页)
+    //查询所有的博客(分页)(后台)
     @GetMapping("/findAllBlogs/{num}")
     public String findAllBlogs(@PathVariable Integer num, Model model) {
 
-        Page<Blogs> blogsPage = blogsService.findBlogsNoCriteria(num, 10);
+        Page<Blogs> blogsPage = blogsService.findBlogsNoCriteria(num, 5);
         //是否有下一页
         boolean hasNext = blogsPage.hasNext();
         model.addAttribute("hasNext", hasNext);
@@ -118,27 +143,11 @@ public class BlogsController {
     }
 
 
-    //后台个人中心
-//    符合状态的所有用户
-//    查询符合状态的用户信息
-//    @RequestMapping(value = "/findStatusBlog")
-//    public String findStatusBlog(Model model) {
-//
-//        List<Blogs> blogs = blogsService.findByBlogStatus("1");
-//        model.addAttribute("blogs", blogs);
-//        //查询所有标签
-//        List<Labels> labelsList = labelsService.findAllLabels();
-//        model.addAttribute("labelsList", labelsList);
-//        logger.info("labelsList---" + labelsList);
-//
-//        return "blog";
-//    }
-
     //前台查询所有博客
     @GetMapping("/findAnyBlogs/{num}")
     public String findAnyBlogs(@PathVariable Integer num, Model model) {
 
-        Page<Blogs> blogsPage = blogsService.findBlogsNoCriteria(num, 6);
+        Page<Blogs> blogsPage = blogsService.findBlogsNoCriteria(num, 5);
         //是否有下一页
         boolean hasNext = blogsPage.hasNext();
         model.addAttribute("hasNext", hasNext);
@@ -188,47 +197,6 @@ public class BlogsController {
         return "blog";
     }
 
-
-
-
-
-
-    //
-//    /**
-//     * 未完成
-//     * @param model
-//     * @param userId
-//     * @return
-//     */
-//    @RequestMapping("/getAllBlogByUserId")
-//    public Message getAllBlogByUserId(Model model, Integer userId) {
-//    	List<Blogs> listBlogs = blogsService.getAllBlogByUserId(userId);
-//    	if(null != listBlogs) {
-//    		model.addAttribute("listBlogs", listBlogs);
-//        	return Message.success("查询成功");
-//    	}else {
-//    		return Message.fail("查询失败");
-//    	}
-//    }
-//
-//    /**
-//     *
-//     * 未完成
-//     * @param model
-//     * @param labels
-//     * @return
-//     */
-//    @RequestMapping("/getAllBlogByLabel")
-//    public Message getAllBlogByLabel(Model model, List<Labels> labels) {
-//    	List<Blogs> listBlogs = blogsService.getAllBlogByLabel(labels);
-//    	if(null != listBlogs) {
-//    		model.addAttribute("listBlogs", listBlogs);
-//        	return Message.success("查询成功");
-//    	}else {
-//    		return Message.fail("查询失败");
-//    	}
-//    }
-//
     @RequestMapping("/getBlogByBlogId/{blogId}")
     @ResponseBody
     public Message getBlogByBlogId(Model model, @PathVariable("blogId") Integer blogId) {
@@ -266,36 +234,68 @@ public class BlogsController {
     }
 
 
-//    @RequestMapping("/deleteBlog/{blogId}")
-//    @ResponseBody
-//    public Message deleteBlog(@PathVariable("blogId") Integer blogId) {
-//
-//        if (blogId != null){
-//        Blogs blog = blogsService.getBlogByBlogId(blogId);
-//        if (blog.getBlogStatus().equals("1")){
-//            blog.setBlogStatus("0");
-//            blogsService.saveBlog(blog);
-//        }else {
-//            blog.setBlogStatus("1");
-//            blogsService.saveBlog(blog);
-//        }
-//        return Message.success("操作成功");
-//        }else{
-//        return Message.fail("操作失败");
-//        }
-//    }
-
-//    真删除
+    //    真删除
     @RequestMapping("/deleteBlog/{blogId}")
     @ResponseBody
-    public Message deleteBlog(@PathVariable("blogId")Integer blogId) {
+    public Message deleteBlog(@PathVariable("blogId") Integer blogId) {
         boolean result = blogsService.deleteByBlogId(blogId);
-        if(result == true) {
+        if (result == true) {
             return Message.success("删除成功");
-        }else {
+        } else {
             return Message.success("删除失败");
         }
     }
 
 
+    //发表博客 zhengwei
+    @PostMapping("/addBlog")
+    @ResponseBody
+    public Message addBlog(Integer userId, Blogs blogs, MultipartFile file, Integer labelId) throws IOException {
+        //判断用户是否登录
+        if (userId != null) {
+            UserInfo userInfo = userService.findByUserId(userId);
+            List<Labels> labelsList = new ArrayList<>();
+            //判断是否是新的博客
+            if (blogs.getBlogId() != null) {
+                return Message.fail("该博客已存在");
+            } else {
+                if (file != null || labelId != null) {
+                    //带文件发表
+                    //随机生成文件名
+                    String filename1 = UUID.randomUUID().toString().replace("-", "");
+                    logger.info("filename1====" + filename1);
+                    //获取文件的后缀
+                    String ext = FilenameUtils.getExtension(file.getOriginalFilename());
+                    logger.info("ext====" + ext);
+                    //写入文件到指定位置
+
+                    file.transferTo(new File(filename1 + "." + ext));
+                    blogs.setBlogCreateTime(new Date());
+                    blogs.setBlogPic(filename1 + "." + ext);
+                    blogs.setBlogStatus("1");
+                    blogs.setUserInfo(userInfo);
+                    blogsService.saveBlog(blogs);
+                    //简历博客与标签的关系
+                    //添加标签
+                    Labels label = labelsService.findLabelById(labelId);
+                    labelsList.add(label);
+                    blogs.setLabels(labelsList);
+                    return Message.success("发表成功");
+                } else {
+                    //不带文件发表
+                    blogs.setBlogCreateTime(new Date());
+                    blogs.setBlogStatus("1");
+                    blogs.setUserInfo(userInfo);
+                    //不带标签
+                    Labels labels = new Labels();
+                    labelsList.add(labels);
+                    blogs.setLabels(labelsList);
+                    blogsService.saveBlog(blogs);
+                    return Message.success("发表成功");
+                }
+            }
+        } else {
+            return Message.fail("请登录后再发表");
+        }
+    }
 }

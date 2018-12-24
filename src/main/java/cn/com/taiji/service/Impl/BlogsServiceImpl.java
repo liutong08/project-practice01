@@ -74,30 +74,6 @@ public class BlogsServiceImpl implements BlogsService{
 		}
 
 	}
-//
-//	@Override
-//	public List<Blogs> getAllBlogByUserId(Integer userId) {
-//		List<Blogs> listBlogs =  blogsRepository.findAllByUserId(userId);
-//		if(listBlogs.get(0) != null) {
-//			return listBlogs;
-//		}else {
-//			return null;
-//		}
-//	}
-//
-//	@Override
-//	public List<Blogs> getAllBlogByLabel(List<Labels> labels) {
-//		List<Blogs> listAllBlogs =  null;
-//		for (Labels label : labels) {
-//			List<Blogs> listBlogs = blogsRepository.getAllBlogByLabel(label);
-//			listAllBlogs.addAll(listBlogs);
-//		}
-//		if(listAllBlogs.get(0) != null) {
-//			return listAllBlogs;
-//		}else {
-//			return null;
-//		}
-//	}
 
 	@Transactional
 	@Override
